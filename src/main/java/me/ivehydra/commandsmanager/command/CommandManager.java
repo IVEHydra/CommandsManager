@@ -70,7 +70,7 @@ public class CommandManager {
 
     private Command cooldownCommand(ConfigurationSection section) { return new Command(section.getString("permission"), section.getStringList("time.custom"), section.getInt("time.default"), section.getStringList("worlds"), section.getStringList("commands"), section.getStringList("actions")); }
 
-    private Command delayCommand(ConfigurationSection section) { return new Command(section.getString("permission"), section.getStringList("time.custom"), section.getInt("time.default"), section.getStringList("cost.custom"), section.getInt("cost.default"), section.getString("cost.type"), section.getString("loadingBarLenght"), section.getStringList("worlds"), section.getStringList("commands"), section.getStringList("actions.onWait"), section.getStringList("actions.onSuccess"), section.getStringList("actions.onFail"));  }
+    private Command delayCommand(ConfigurationSection section) { return new Command(section.getString("permission"), section.getStringList("time.custom"), section.getInt("time.default"), section.getStringList("cost.custom"), section.getInt("cost.default"), section.getString("cost.type"), section.getString("loadingBarLength"), section.getStringList("worlds"), section.getStringList("commands"), section.getStringList("actions.onWait"), section.getStringList("actions.onSuccess"), section.getStringList("actions.onFail"));  }
 
     public CommandSettings getCommandSettings() { return commandSettings; }
 

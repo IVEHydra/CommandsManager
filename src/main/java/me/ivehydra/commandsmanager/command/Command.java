@@ -2,14 +2,12 @@ package me.ivehydra.commandsmanager.command;
 
 import me.ivehydra.commandsmanager.CommandsManager;
 import me.ivehydra.commandsmanager.command.cost.CostType;
-import me.ivehydra.commandsmanager.listeners.PlayerCommandPreProcessListener;
 import me.ivehydra.commandsmanager.utils.MessageUtils;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -28,7 +26,7 @@ public class Command {
     private CostType costType;
     private List<String> costList;
     private int defaultCost;
-    private String loadingBarLenght;
+    private String loadingBarLength;
     private final List<World> worlds;
     private final List<String> commands;
     private List<String> actions;
@@ -54,7 +52,7 @@ public class Command {
         this.actions = actions;
     }
 
-    public Command(String permission, List<String> timeList, int defaultTime, List<String> costList, int defaultCost, String costType, String loadingBarLenght, List<String> worlds, List<String> commands, List<String> actionsOnWait, List<String> actionsOnSuccess, List<String> actionsOnFail) {
+    public Command(String permission, List<String> timeList, int defaultTime, List<String> costList, int defaultCost, String costType, String loadingBarLength, List<String> worlds, List<String> commands, List<String> actionsOnWait, List<String> actionsOnSuccess, List<String> actionsOnFail) {
         this.permission = permission;
         this.type = CommandType.DELAY;
         this.timeList = timeList;
@@ -62,7 +60,7 @@ public class Command {
         this.costList = costList;
         this.defaultCost = defaultCost;
         this.costType = CostType.fromString(costType);
-        this.loadingBarLenght = loadingBarLenght;
+        this.loadingBarLength = loadingBarLength;
         this.worlds = loadWorlds(worlds);
         this.commands = commands;
         this.actionsOnWait = actionsOnWait;
@@ -79,7 +77,7 @@ public class Command {
         return timeList.stream().map(key -> key.split(";")).filter(args -> args.length == 2 && p.hasPermission(args[0])).map(args -> Integer.parseInt(args[1])).findFirst().orElse(defaultTime);
     }
 
-    public int getLoadingBarLenght(Player p) { return "%command_time%".equals(loadingBarLenght) ? getTime(p) : Integer.parseInt(loadingBarLenght); }
+    public int getLoadingBarLength(Player p) { return "%command_time%".equals(loadingBarLength) ? getTime(p) : Integer.parseInt(loadingBarLength); }
 
     public int getCost(Player p) {
         if(costList == null || costList.isEmpty()) return defaultCost;
@@ -90,70 +88,24 @@ public class Command {
 
     public CostType getCostType() { return costType; }
 
-    public boolean can(Player p, Command command) {
-        switch(command.getCostType()) {
-            case EXPERIENCE:
-                return hasEXP(p, command);
-            case MONEY:
-                return hasMoney(p);
-            case CUSTOM:
-                return hasCustom(p, command);
-            default:
-                return false;
-        }
-    }
-
-    public void withdraw(Player p, Command command, String eCommand) {
-        List<Player> delay = instance.getDelay();
-        Economy economy = instance.getEconomy();
-        switch(command.getCostType()) {
-            case EXPERIENCE:
-                if(hasEXP(p, command)) {
-                    withdrawEXP(p, command);
-                    return;
-                }
-                p.sendMessage(MessageUtils.NO_EXPERIENCE.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString(), "%command_cost%", String.valueOf(command.getCost(p)), "%command_name%", eCommand));
-                delay.remove(p);
-                break;
-            case MONEY:
-                if(hasMoney(p)) {
-                    economy.withdrawPlayer(p, getCost(p));
-                    return;
-                }
-                p.sendMessage(MessageUtils.NO_MONEY.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString(), "%command_cost%", String.valueOf(command.getCost(p)), "%command_name%", eCommand));
-                delay.remove(p);
-                break;
-            case CUSTOM:
-                if(hasCustom(p, command)) {
-                    withdrawCustom(p, command);
-                    return;
-                }
-                p.sendMessage(MessageUtils.NO_CUSTOM.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString(), "%command_cost%", String.valueOf(command.getCost(p)), "%command_name%", eCommand));
-                delay.remove(p);
-                break;
-        }
-    }
-
-
-
-    public boolean hasEXP(Player p, Command command) {
-        int exp = command.getCost(p);
+    public boolean hasEXP(Player p) {
+        int exp = getCost(p);
         return p.getTotalExperience() >= exp;
     }
 
-    public void withdrawEXP(Player p, Command command) {
-        int exp = command.getCost(p);
+    public void withdrawEXP(Player p) {
+        int exp = getCost(p);
         int totalEXP = p.getTotalExperience();
         p.setTotalExperience(totalEXP - exp);
     }
 
-    public boolean hasCustom(Player p, Command command) {
-        String custom = command.getType().toString();
+    public boolean hasCustom(Player p) {
+        String custom = getType().toString();
         if(custom.startsWith("CUSTOM:")) {
             String name = custom.split(":")[1];
             Material material = Material.getMaterial(name);
             if(material != null) {
-                int required = command.getCost(p);
+                int required = getCost(p);
                 ItemStack itemStack = new ItemStack(material, required);
                 return p.getInventory().containsAtLeast(itemStack, required);
             }
@@ -161,13 +113,13 @@ public class Command {
         return false;
     }
 
-    public void withdrawCustom(Player p, Command command) {
-        String custom = command.getType().toString();
+    public void withdrawCustom(Player p) {
+        String custom = getType().toString();
         if(custom.startsWith("CUSTOM:")) {
             String name = custom.split(":")[1];
             Material material = Material.getMaterial(name);
             if(material != null) {
-                int required = command.getCost(p);
+                int required = getCost(p);
                 ItemStack itemStack = new ItemStack(material, required);
                 p.getInventory().removeItem(itemStack);
             }

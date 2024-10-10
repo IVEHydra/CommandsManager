@@ -3,6 +3,7 @@ package me.ivehydra.commandsmanager.delay;
 import com.cryptomorin.xseries.messages.ActionBar;
 import me.ivehydra.commandsmanager.CommandsManager;
 import me.ivehydra.commandsmanager.command.Command;
+import me.ivehydra.commandsmanager.utils.MessageUtils;
 import me.ivehydra.commandsmanager.utils.StringUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -20,16 +21,16 @@ public class Delay {
         if(!delay.contains(p)) delay.add(p);
 
         int time = command.getTime(p);
-        int loadingBarLenght = command.getLoadingBarLenght(p);
+        int loadingBarLength = command.getLoadingBarLength(p);
 
-        BukkitRunnable delayRunnable = delayRunnable(p, eCommand, command, time, loadingBarLenght);
+        BukkitRunnable delayRunnable = delayRunnable(p, eCommand, command, time, loadingBarLength);
         delayRunnable.runTaskTimer(instance, 0L, 20L);
 
         BukkitRunnable failRunnable = failRunnable(p, eCommand, command, delayRunnable);
         failRunnable.runTaskTimer(instance, 0L, 5L);
     }
 
-    private static BukkitRunnable delayRunnable(Player p, String eCommand, Command command, int time, int loadingBarLenght) {
+    private static BukkitRunnable delayRunnable(Player p, String eCommand, Command command, int time, int loadingBarLength) {
         return new BukkitRunnable() {
             int currentTime = 0;
             @Override
@@ -39,7 +40,7 @@ public class Delay {
                     return;
                 }
                 currentTime++;
-                if(time > 0) ActionBar.sendActionBar(p, LoadingBar.getLoadingBar(currentTime, time, loadingBarLenght, StringUtils.getColoredString(instance.getConfig().getString("loadingBar.completedColor")), StringUtils.getColoredString(instance.getConfig().getString("loadingBar.notCompletedColor")), instance.getConfig().getString("loadingBar.symbol")));
+                if(time > 0) ActionBar.sendActionBar(p, LoadingBar.getLoadingBar(currentTime, time, loadingBarLength, StringUtils.getColoredString(instance.getConfig().getString("loadingBar.completedColor")), StringUtils.getColoredString(instance.getConfig().getString("loadingBar.notCompletedColor")), instance.getConfig().getString("loadingBar.symbol")));
                 if(currentTime > time) {
                     executeCommands(p, eCommand, command);
                     cancel();
@@ -64,11 +65,32 @@ public class Delay {
 
     private static void executeCommands(Player p, String eCommand, Command command) {
         ActionBar.sendActionBar(p, "");
-        if(!command.can(p, command)) {
-            command.withdraw(p, command, eCommand);
-            return;
+        switch(command.getCostType()) {
+            case EXPERIENCE:
+                if(!command.hasEXP(p)) {
+                    p.sendMessage(MessageUtils.NO_EXPERIENCE.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString(), "%command_cost%", String.valueOf(command.getCost(p)), "%command_name%", eCommand));
+                    delay.remove(p);
+                    return;
+                }
+                command.withdrawEXP(p);
+                break;
+            case MONEY:
+                if(!command.hasMoney(p)) {
+                    p.sendMessage(MessageUtils.NO_MONEY.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString(), "%command_cost%", String.valueOf(command.getCost(p)), "%command_name%", eCommand));
+                    delay.remove(p);
+                    return;
+                }
+                instance.getEconomy().withdrawPlayer(p, command.getCost(p));
+                break;
+            case CUSTOM:
+                if(!command.hasCustom(p)) {
+                    p.sendMessage(MessageUtils.NO_CUSTOM.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString(), "%command_cost%", String.valueOf(command.getCost(p)), "%command_name%", eCommand));
+                    delay.remove(p);
+                    return;
+                }
+                command.withdrawCustom(p);
+                break;
         }
-        command.withdraw(p, command, eCommand);
         p.performCommand(eCommand.replace("/", ""));
         instance.getActionManager().execute(p, command.getActionsOnSuccess(), eCommand, command);
         delay.remove(p);

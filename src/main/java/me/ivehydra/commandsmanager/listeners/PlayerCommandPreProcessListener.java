@@ -12,6 +12,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
+import java.util.List;
+
 public class PlayerCommandPreProcessListener implements Listener {
 
     private final CommandsManager instance = CommandsManager.getInstance();
@@ -23,11 +25,13 @@ public class PlayerCommandPreProcessListener implements Listener {
         Player p = e.getPlayer();
         CommandManager commandManager = instance.getCommandManager();
         CommandSettings commandSettings = commandManager.getCommandSettings();
+        List<Player> delay = instance.getDelay();
+        List<Player> delayFailed = instance.getDelayFailed();
 
-        if(commandSettings.isCommand() && instance.getDelay().contains(p)) {
+        if(commandSettings.isCommand() && delay.contains(p)) {
             e.setCancelled(true);
-            instance.getDelayFailed().add(p);
-            instance.getDelay().remove(p);
+            delayFailed.add(p);
+            delay.remove(p);
             return;
         }
 
@@ -63,17 +67,17 @@ public class PlayerCommandPreProcessListener implements Listener {
                     case DELAY:
                         switch(command.getCostType()) {
                             case EXPERIENCE:
-                                if(!command.hasEXP(p, command)) {
+                                if(!command.hasEXP(p)) {
                                     e.setCancelled(true);
                                     p.sendMessage(MessageUtils.NO_EXPERIENCE.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString(), "%command_cost%", String.valueOf(command.getCost(p)), "%command_name%", eCommand));
                                     return;
                                 }
                                 if(p.hasPermission("commandsmanager.*") || p.hasPermission(command.getPermission())) {
-                                    command.withdrawEXP(p, command);
+                                    command.withdrawEXP(p);
                                     instance.getActionManager().execute(p, command.getActionsOnSuccess(), eCommand, command);
                                 } else {
                                     e.setCancelled(true);
-                                    if(!instance.getDelay().contains(p))
+                                    if(!delay.contains(p))
                                         Delay.delay(p, eCommand, command);
                                     instance.getActionManager().execute(p, command.getActionsOnWait(), eCommand, command);
                                 }
@@ -89,23 +93,23 @@ public class PlayerCommandPreProcessListener implements Listener {
                                     instance.getActionManager().execute(p, command.getActionsOnSuccess(), eCommand, command);
                                 } else {
                                     e.setCancelled(true);
-                                    if(!instance.getDelay().contains(p))
+                                    if(!delay.contains(p))
                                         Delay.delay(p, eCommand, command);
                                     instance.getActionManager().execute(p, command.getActionsOnWait(), eCommand, command);
                                 }
                                 break;
                             case CUSTOM:
-                                if(!command.hasCustom(p, command)) {
+                                if(!command.hasCustom(p)) {
                                     e.setCancelled(true);
                                     p.sendMessage(MessageUtils.NO_CUSTOM.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString(), "%command_cost%", String.valueOf(command.getCost(p)), "%command_name%", eCommand));
                                     return;
                                 }
                                 if(p.hasPermission("commandsmanager.*") || p.hasPermission(command.getPermission())) {
-                                    command.withdrawCustom(p, command);
+                                    command.withdrawCustom(p);
                                     instance.getActionManager().execute(p, command.getActionsOnSuccess(), eCommand, command);
                                 } else {
                                     e.setCancelled(true);
-                                    if(!instance.getDelay().contains(p))
+                                    if(!delay.contains(p))
                                         Delay.delay(p, eCommand, command);
                                     instance.getActionManager().execute(p, command.getActionsOnWait(), eCommand, command);
                                 }

@@ -9,6 +9,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
+import java.util.List;
+
 public class EntityDamageByEntityListener implements Listener {
 
     private final CommandsManager instance = CommandsManager.getInstance();
@@ -17,15 +19,18 @@ public class EntityDamageByEntityListener implements Listener {
     public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent e) {
         Entity entity = e.getEntity();
         Entity damager = e.getDamager();
-        CommandManager commandManager = instance.getCommandManager();
-        CommandSettings commandSettings = commandManager.getCommandSettings();
 
         if(entity instanceof Player || damager instanceof Player) {
             Player p = (Player) (entity instanceof Player ? entity : damager);
 
-            if(commandSettings.isDamage() && instance.getDelay().contains(p)) {
-                instance.getDelayFailed().add(p);
-                instance.getDelay().remove(p);
+            CommandManager commandManager = instance.getCommandManager();
+            CommandSettings commandSettings = commandManager.getCommandSettings();
+            List<Player> delay = instance.getDelay();
+            List<Player> delayFailed = instance.getDelayFailed();
+
+            if(commandSettings.isDamage() && delay.contains(p)) {
+                delayFailed.add(p);
+                delay.remove(p);
             }
         }
 

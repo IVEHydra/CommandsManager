@@ -8,6 +8,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
+import java.util.List;
+
 public class AsyncPlayerChatListener implements Listener {
 
     private final CommandsManager instance = CommandsManager.getInstance();
@@ -17,10 +19,12 @@ public class AsyncPlayerChatListener implements Listener {
         Player p = e.getPlayer();
         CommandManager commandManager = instance.getCommandManager();
         CommandSettings commandSettings = commandManager.getCommandSettings();
+        List<Player> delay = instance.getDelay();
+        List<Player> delayFailed = instance.getDelayFailed();
 
-        if(commandSettings.isChat() && instance.getDelay().contains(p)) {
-            instance.getDelayFailed().add(p);
-            instance.getDelay().remove(p);
+        if(commandSettings.isChat() && delay.contains(p)) {
+            delayFailed.add(p);
+            delay.remove(p);
         }
     }
 

@@ -6,6 +6,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.util.List;
+
 public class PlayerQuitListener implements Listener {
 
     private final CommandsManager instance = CommandsManager.getInstance();
@@ -13,9 +15,11 @@ public class PlayerQuitListener implements Listener {
     @EventHandler
     public void onPlayerQuitEvent(PlayerQuitEvent e) {
         Player p = e.getPlayer();
+        List<Player> delay = instance.getDelay();
+        List<Player> delayFailed = instance.getDelayFailed();
 
-        instance.getDelay().remove(p);
-        instance.getDelayFailed().remove(p);
+        delay.remove(p);
+        delayFailed.remove(p);
     }
 
 }

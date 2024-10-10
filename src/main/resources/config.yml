@@ -164,7 +164,7 @@ commandsSettings:
       #%command_time% - Returns the number based on the time.
       #%command_time% must be written between " ";
       #The number can still be written, either without the " " or with.
-      loadingBarLenght: "%command_time%"
+      loadingBarLength: "%command_time%"
       #Only in these worlds the commands will have a delay and cost.
       worlds:
         - "world"
@@ -198,7 +198,7 @@ commandsSettings:
         custom:
           - "commandsmanager.test4.cost.vip;0"
         default: 10
-      loadingBarLenght: 5
+      loadingBarLength: 5
       worlds:
         - "world"
       commands:

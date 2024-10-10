@@ -36,7 +36,7 @@ public class CommandsManager extends JavaPlugin {
     private static CommandsManager instance;
     private Economy economy;
     private File cooldownsFile;
-    private final YamlConfiguration cooldownsConfiguration = new YamlConfiguration();
+    private YamlConfiguration cooldownsConfiguration;
     private MySQLConnection mySQLConnection;
     private CommandManager commandManager;
     private ActionManager actionManager;
@@ -47,6 +47,7 @@ public class CommandsManager extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        cooldownsConfiguration = new YamlConfiguration();
         delay = new ArrayList<>();
         delayFailed = new ArrayList<>();
 
@@ -57,8 +58,8 @@ public class CommandsManager extends JavaPlugin {
 
         if(isPlaceholderAPIPresent()) {
             new PlaceholderAPI().register();
-            sendLog("[CommandsManager]" + ChatColor.GREEN + " PlaceholderAPI has been found. The cooldown placeholder is now available for use.");
-        } else sendLog("[CommandsManager]" + ChatColor.YELLOW + " PlaceholderAPI not found. The plugin will still function correctly, but the cooldown placeholder will not be available.");
+            sendLog("[CommandsManager]" + ChatColor.GREEN + " PlaceholderAPI has been found. The cooldown placeholder is now available for use. The placeholders from PlaceholderAPI can now be used in Actions.");
+        } else sendLog("[CommandsManager]" + ChatColor.YELLOW + " PlaceholderAPI not found. The plugin will still function correctly, but the cooldown placeholder and the placeholders from PlaceholderAPI will not be available.");
 
         saveDefaultConfig();
         registerCooldownsFile();

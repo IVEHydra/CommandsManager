@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
+import java.util.List;
 import java.util.Objects;
 
 public class PlayerMoveListener implements Listener {
@@ -20,12 +21,14 @@ public class PlayerMoveListener implements Listener {
         Player p = e.getPlayer();
         CommandManager commandManager = instance.getCommandManager();
         CommandSettings commandSettings = commandManager.getCommandSettings();
+        List<Player> delay = instance.getDelay();
+        List<Player> delayFailed = instance.getDelayFailed();
         Location to = e.getTo();
         Location from = e.getFrom();
 
-        if(commandSettings.isMove() && instance.getDelay().contains(p) && (Objects.requireNonNull(to).getBlockX() != from.getBlockX() || to.getBlockY() != from.getBlockY() || to.getBlockZ() != from.getBlockZ())) {
-            instance.getDelayFailed().add(p);
-            instance.getDelay().remove(p);
+        if(commandSettings.isMove() && delay.contains(p) && (Objects.requireNonNull(to).getBlockX() != from.getBlockX() || to.getBlockY() != from.getBlockY() || to.getBlockZ() != from.getBlockZ())) {
+            delayFailed.add(p);
+            delay.remove(p);
         }
     }
 

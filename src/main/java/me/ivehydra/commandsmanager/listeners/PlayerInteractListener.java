@@ -8,6 +8,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import java.util.List;
+
 public class PlayerInteractListener implements Listener {
 
     private final CommandsManager instance = CommandsManager.getInstance();
@@ -17,10 +19,12 @@ public class PlayerInteractListener implements Listener {
         Player p = e.getPlayer();
         CommandManager commandManager = instance.getCommandManager();
         CommandSettings commandSettings = commandManager.getCommandSettings();
+        List<Player> delay = instance.getDelay();
+        List<Player> delayFailed = instance.getDelayFailed();
 
-        if(commandSettings.isInteract() && instance.getDelay().contains(p)) {
-            instance.getDelayFailed().add(p);
-            instance.getDelay().remove(p);
+        if(commandSettings.isInteract() && delay.contains(p)) {
+            delayFailed.add(p);
+            delay.remove(p);
         }
     }
 
