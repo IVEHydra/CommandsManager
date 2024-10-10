@@ -2,8 +2,6 @@ package me.ivehydra.commandsmanager.command;
 
 import me.ivehydra.commandsmanager.CommandsManager;
 import me.ivehydra.commandsmanager.command.cost.CostType;
-import me.ivehydra.commandsmanager.utils.MessageUtils;
-import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
