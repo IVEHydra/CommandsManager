@@ -1,0 +1,218 @@
+updateCheck: true
+
+mySQL:
+  enabled: false
+  host: "localhost"
+  port: 3306
+  username: "root"
+  password: "root"
+  database: "commandsmanager"
+
+messages:
+  prefix: "&cCommandsManager &7>>"
+  general:
+    noPermission: "%prefix% &cYou don't have that permission!"
+    configReloaded: "%prefix% &aConfig Reloaded!"
+    wrongArguments: "%prefix% &cWrong Arguments!"
+  updateCheck:
+    latestVersion: "%prefix% &aThis is the latest version of the plugin."
+    newVersionAvailable:
+      - "%prefix% &eThere is a new version available."
+      - "%prefix% &eYou can download it at: https://www.spigotmc.org/resources/commandsmanager-1-8-1-21-1-mysql.111108/"
+  command:
+    blockColons: "%prefix% &cYou can't use colons in the first argument of the command!"
+    cost:
+      noEXP: "%prefix% &cYou don't have enough experience(&e%command_cost%&c) to execute &e%command_name%&c."
+      noMoney: "%prefix% &cYou don't have enough money(&e%command_cost%&c$) to execute &e%command_name%&c."
+      noCustom: "%prefix% &cYou don't have enough items(&e%command_cost%&c) to execute &e%command_name%&c."
+  time:
+    seconds: " seconds"
+    minutes: " minutes"
+    hours:  " hours"
+    days: " days"
+  placeholder:
+    cooldown:
+      activeCooldown: "%prefix% &cYou have to wait &e%command_cooldown% &cbefore using this command!"
+      inactiveCooldown: "%prefix% &2This command is ready to be used."
+
+loadingBar:
+  symbol: "[]"
+  completedColor: "&a"
+  notCompletedColor: "&c"
+
+commandsSettings:
+  #If set to "true", commands with colons in the first argument(/bukkit:plugins), will not be executed.
+  blockColons: true
+  #The delay will be canceled every time an event is triggered.
+  delayCommandCancel:
+    #If set to "true", the delay will be canceled every time the player tries to execute a command.
+    onPlayerCommandProcessEvent: true
+    #If set to "true", the delay will be canceled every time the player tries to write in chat.
+    onPlayerChatEvent: true
+    #If set to "true", the delay will be canceled every time the player moves.
+    onPlayerMoveEvent: true
+    #If set to "true", the delay will be canceled every time the player interacts with any type of block.
+    onPlayerInteractEvent: true
+    #If set to "true", the delay will be canceled every time the player takes/does damage to any entity.
+    onDamageEvent: true
+  #
+  #Each group must have a unique identifier.
+  #Each group has distinct voices, based on its type.
+  #To create other groups, follow the 4 examples.
+  #
+  commands:
+    test1:
+      #Types: "BLOCK", "COOLDOWN" and "DELAY".
+      #BLOCK: Blocks any command.
+      #COOLDOWN: Adds a Cooldown to any command.
+      #DELAY: Adds a Delay with Cost to any command.
+      type: "BLOCK"
+      #With this permission, the block will be bypassed.
+      permission: "commandsmanager.test1"
+      #Only in these worlds the commands will be blocked.
+      worlds:
+        - "world"
+        - "world_nether"
+        - "world_the_end"
+      #Only these commands will be blocked.
+      commands:
+        - "/help"
+        - "/version"
+        - "/ver"
+        - "/plugins"
+        - "/pl"
+        - "/about"
+        - "/icanhasbukkit"
+      #Built In Placeholders:
+      #%prefix% - Returns the prefix.
+      #%player_name% - Returns the player's name.
+      #%command_name% - Returns the name of the command.
+      #%command_time% - Returns the time of the command.
+      #%command_cooldown% - Returns the cooldown time.
+      #%cooldown_cost% - Returns the cost.
+      #
+      #PlaceholderAPI placeholder:
+      #It needs PlaceholderAPI to work and this placeholder can be used by any plugin.
+      #%commandsmanager_cooldown_/<command>% - Returns the cooldown time of the command.
+      #
+      #Actions:
+      #[SOUND] Sound;Volume;Pitch - Sends a sound to the player.
+      #[MESSAGE] Message - Sends a message to the player.
+      #[JSON_MESSAGE] Message - Sends a json_message to the player.
+      #The JSONMessage must be written between ' '.
+      #[TITLE] Title;SubTitle;FadeIn;Stay;FadeOut - Sends a title to the player.
+      #[ACTIONBAR] String - Sends an actionbar to the player.
+      #[COMMAND_CONSOLE] Command - Executes a command as console.
+      #[COMMAND_PLAYER] Command - Executes a command as player.
+      #To execute the command the "/" is not needed.
+      actions:
+        - "[SOUND] ENTITY_EXPERIENCE_ORB_PICKUP;1.0;1.0"
+        - "[MESSAGE] %prefix% &e%command_name% &ccan't be executed!"
+        - "[TITLE] &e%command_name%;&cCan't be executed;1;2;1"
+        - "[ACTIONBAR] &cYou can't do that!"
+    test2:
+      type: "COOLDOWN"
+      #With this permission, the cooldown will be bypassed.
+      permission: "commandsmanager.test2"
+      time:
+        #Define a custom cooldown time for ranks/players who will have the permission.
+        #Format: Permission;Time
+        #Time is calculated in Seconds.
+        custom:
+          - "commandsmanager.test2.time.vip;5"
+        #This default cooldown time applies only to ranks/players without specific permissions for a custom cooldown.
+        default: 10
+      #Only in these worlds the commands will have a cooldown.
+      worlds:
+        - "world"
+        - "world_nether"
+        - "world_the_end"
+      #Only these commands will have a cooldown.
+      commands:
+        - "/tell"
+        - "/msg"
+        - "/r"
+      actions:
+        - "[SOUND] ENTITY_EXPERIENCE_ORB_PICKUP;1.0;1.0"
+        - "[MESSAGE] %prefix% &cYou need to wait &e%command_cooldown% &cto execute &e%command_name%&c."
+    test3:
+      type: "DELAY"
+      #With this permission, the delay will be bypassed.
+      permission: "commandsmanager.test3"
+      time:
+        #Define a custom delay time for ranks/players who will have the permission.
+        #Format: Permission;Time
+        #Time is calculated in Seconds.
+        custom:
+          - "commandsmanager.test3.time.vip;10"
+        #This default delay time applies only to ranks/players without specific permissions for a custom delay.
+        default: 20
+      cost:
+        #Types: "EXPERIENCE", "CUSTOM".
+        #EXPERIENCE: Player's experience points will be used.
+        #MONEY: Player's in-game currency will be used.
+        #CUSTOM: Specific items will be used.
+        #        To define the item, use the format CUSTOM:<material>, where <material> is the name of the item(CUSTOM:DIAMOND).
+        type: "EXPERIENCE"
+        #Define a custom cost for ranks/players who will have the permission.
+        custom:
+          - "commandsmanager.test3.cost.vip;10"
+        #This default cost applies only to ranks/players without specific permissions for a custom cost.
+        default: 20
+      #Lenght of the LoadingBar.
+      #Built In Placeholder:
+      #%command_time% - Returns the number based on the time.
+      #%command_time% must be written between " ";
+      #The number can still be written, either without the " " or with.
+      loadingBarLenght: "%command_time%"
+      #Only in these worlds the commands will have a delay and cost.
+      worlds:
+        - "world"
+        - "world_nether"
+        - "world_the_end"
+      #Only these commands will have a delay and cost.
+      commands:
+        - "/spawn"
+        - "/tpaccept"
+        - "/warp test"
+      actions:
+        onWait:
+          - "[SOUND] ENTITY_EXPERIENCE_ORB_PICKUP;1.0;1.0"
+          - "[MESSAGE] %prefix% &cYou need to wait &e%command_time% &cseconds to execute &e%command_name%&c."
+        onSuccess:
+          - "[SOUND] ENTITY_EXPERIENCE_ORB_PICKUP;1.0;1.0"
+          - "[TITLE] &aSUCCESS;&7Thanks for waiting!;1;2;1"
+          - "[ACTIONBAR] &aSUCCESS"
+        onFail:
+          - "[SOUND] ENTITY_EXPERIENCE_ORB_PICKUP;1.0;1.0"
+          - "[ACTIONBAR] &cYou don't have to do anything while waiting!"
+    test4:
+      type: "DELAY"
+      permission: "commandsmanager.test4"
+      time:
+        custom:
+          - "commandsmanager.test4.time.vip;0"
+        default: 5
+      cost:
+        type: "MONEY"
+        custom:
+          - "commandsmanager.test4.cost.vip;0"
+        default: 10
+      loadingBarLenght: 5
+      worlds:
+        - "world"
+      commands:
+        - "/rtp"
+      actions:
+        onWait:
+          - "[SOUND] ENTITY_EXPERIENCE_ORB_PICKUP;1.0;1.0"
+          - "[MESSAGE] %prefix% &cYou need to wait &e%command_time% &cseconds to execute &e%command_name%&c."
+          - "[MESSAGE] %prefix% &cAfter waiting, &e%command_cost%&c$ will be taken from you."
+        onSuccess:
+          - "[SOUND] ENTITY_EXPERIENCE_ORB_PICKUP;1.0;1.0"
+          - "[MESSAGE] %prefix% &c- &e%command_cost%&c$"
+          - "[TITLE] &aSUCCESS;&7Thanks for waiting!;1;2;1"
+          - "[ACTIONBAR] &aSUCCESS"
+        onFail:
+          - "[SOUND] ENTITY_EXPERIENCE_ORB_PICKUP;1.0;1.0"
+          - "[ACTIONBAR] &cYou don't have to do anything while waiting!"

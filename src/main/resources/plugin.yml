@@ -1,0 +1,31 @@
+name: CommandsManager
+main: me.ivehydra.commandsmanager.CommandsManager
+author: IVEHydra
+description: Blocks, Adds a Cooldown and Adds a Delay with Cost to any Command.
+version: 3.0
+api-version: 1.13
+softdepend: [PlaceholderAPI, ProtocolLib]
+depend: [Vault]
+
+commands:
+  commandsmanager:
+    description: Main command of CommandsManager.
+    usage: /<command>
+    aliases: [cm]
+
+permissions:
+  commandsmanager.*:
+    description: Allows to execute all commands.
+    children:
+      commandsmanager.help: true
+      commandsmanager.reload: true
+      commandsmanager.bypass.blockColons: true
+  commandsmanager.help:
+    description: Allows to see all command and permissions.
+    default: op
+  commandsmanager.reload:
+    description: Allows to reload the configuration file.
+    default: op
+  commandsmanager.bypass.blockColons:
+    description: Allows to execute commands with colons(:) in the first argument of the command.
+    default: op
