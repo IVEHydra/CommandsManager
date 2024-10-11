@@ -29,12 +29,15 @@ public class CooldownManager {
         section.getKeys(false).forEach(uuid -> {
             String name = section.getString(uuid + ".name");
             List<Cooldown> cooldowns = new ArrayList<>();
-            section.getKeys(false).forEach(command -> {
-                if(!command.equals("name")) {
-                    long cooldown = section.getLong(uuid + "." + command + ".cooldown");
-                    cooldowns.add(new Cooldown(command, cooldown));
-                }
-            });
+            ConfigurationSection commandSection = section.getConfigurationSection(uuid);
+            if(commandSection != null) {
+                commandSection.getKeys(false).forEach(command -> {
+                    if(!command.equals("name")) {
+                        long cooldown = section.getLong(uuid + "." + command + ".cooldown");
+                        cooldowns.add(new Cooldown(command, cooldown));
+                    }
+                });
+            }
             players.add(new PlayerCooldown(uuid, name, cooldowns));
         });
     }
@@ -45,9 +48,7 @@ public class CooldownManager {
         players.forEach(pc -> {
             String uuid = pc.getUUID();
             instance.getCooldownsFile().set("cooldowns." + uuid + ".name", pc.getName());
-            pc.getCooldowns().forEach(cooldown -> {
-                instance.getCooldownsFile().set("cooldowns." + uuid + "." + cooldown.getCommand() + ".cooldown", cooldown.getCommand());
-            });
+            pc.getCooldowns().forEach(cooldown -> instance.getCooldownsFile().set("cooldowns." + uuid + "." + cooldown.getCommand() + ".cooldown", cooldown.getCooldown()));
         });
         instance.saveCooldownsFile();
     }
@@ -95,6 +96,8 @@ public class CooldownManager {
         seconds %= 3600;
         long minutes = seconds / 60;
         seconds %= 60;
+
+        if(days == 0 && hours == 0 && minutes == 0 && seconds == 0) return "0";
 
         StringBuilder builder = new StringBuilder();
         if(days > 0) builder.append(days).append(MessageUtils.DAYS).append(" ");

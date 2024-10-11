@@ -9,7 +9,7 @@ public class VersionUtils {
     private static final CommandsManager instance = CommandsManager.getInstance();
 
     private static boolean isVersionAtLeast(int major, int min) {
-        String version = Bukkit.getVersion();
+        String version = Bukkit.getBukkitVersion();
         String numericVersion = version.split("-")[0];
         String[] args = numericVersion.split("\\.");
         try {
