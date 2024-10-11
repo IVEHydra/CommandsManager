@@ -81,7 +81,7 @@ public class PlayerCommandPreProcessListener implements Listener {
                                         Delay.delay(p, eCommand, command);
                                     instance.getActionManager().execute(p, command.getActionsOnWait(), eCommand, command);
                                 }
-                                break;
+                                return;
                             case MONEY:
                                 if(!command.hasMoney(p)) {
                                     e.setCancelled(true);
@@ -97,11 +97,11 @@ public class PlayerCommandPreProcessListener implements Listener {
                                         Delay.delay(p, eCommand, command);
                                     instance.getActionManager().execute(p, command.getActionsOnWait(), eCommand, command);
                                 }
-                                break;
+                                return;
                             case CUSTOM:
                                 if(!command.hasCustom(p)) {
                                     e.setCancelled(true);
-                                    p.sendMessage(MessageUtils.NO_CUSTOM.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString(), "%command_cost%", String.valueOf(command.getCost(p)), "%command_name%", eCommand));
+                                    p.sendMessage(MessageUtils.NO_CUSTOM.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString(), "%command_customMaterial%", command.getCustomMaterial().name(), "%command_cost%", String.valueOf(command.getCost(p)), "%command_name%", eCommand));
                                     return;
                                 }
                                 if(p.hasPermission("commandsmanager.*") || p.hasPermission(command.getPermission())) {
@@ -113,7 +113,7 @@ public class PlayerCommandPreProcessListener implements Listener {
                                         Delay.delay(p, eCommand, command);
                                     instance.getActionManager().execute(p, command.getActionsOnWait(), eCommand, command);
                                 }
-                                break;
+                                return;
                         }
                         return;
                 }

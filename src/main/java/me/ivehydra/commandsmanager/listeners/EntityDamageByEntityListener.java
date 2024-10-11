@@ -22,7 +22,6 @@ public class EntityDamageByEntityListener implements Listener {
 
         if(entity instanceof Player || damager instanceof Player) {
             Player p = (Player) (entity instanceof Player ? entity : damager);
-
             CommandManager commandManager = instance.getCommandManager();
             CommandSettings commandSettings = commandManager.getCommandSettings();
             List<Player> delay = instance.getDelay();

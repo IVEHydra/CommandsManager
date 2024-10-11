@@ -2,6 +2,7 @@ package me.ivehydra.commandsmanager.command;
 
 import me.ivehydra.commandsmanager.CommandsManager;
 import me.ivehydra.commandsmanager.command.cost.CostType;
+import me.ivehydra.commandsmanager.utils.EXPUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -22,6 +23,7 @@ public class Command {
     private List<String> timeList;
     private int defaultTime;
     private CostType costType;
+    private Material material;
     private List<String> costList;
     private int defaultCost;
     private String loadingBarLength;
@@ -50,7 +52,7 @@ public class Command {
         this.actions = actions;
     }
 
-    public Command(String permission, List<String> timeList, int defaultTime, List<String> costList, int defaultCost, String costType, String loadingBarLength, List<String> worlds, List<String> commands, List<String> actionsOnWait, List<String> actionsOnSuccess, List<String> actionsOnFail) {
+    public Command(String permission, List<String> timeList, int defaultTime, List<String> costList, int defaultCost, String costType, Material material, String loadingBarLength, List<String> worlds, List<String> commands, List<String> actionsOnWait, List<String> actionsOnSuccess, List<String> actionsOnFail) {
         this.permission = permission;
         this.type = CommandType.DELAY;
         this.timeList = timeList;
@@ -58,6 +60,7 @@ public class Command {
         this.costList = costList;
         this.defaultCost = defaultCost;
         this.costType = CostType.fromString(costType);
+        this.material = material;
         this.loadingBarLength = loadingBarLength;
         this.worlds = loadWorlds(worlds);
         this.commands = commands;
@@ -82,45 +85,42 @@ public class Command {
         return costList.stream().map(key -> key.split(";")).filter(args -> args.length == 2 && p.hasPermission(args[0])).map(args -> Integer.parseInt(args[1])).findFirst().orElse(defaultCost);
     }
 
-    public boolean hasMoney(Player p) { return getCost(p) > 0 && instance.getEconomy().has(p, getCost(p)); }
+    public boolean hasMoney(Player p) {
+        int cost = getCost(p);
+        return cost == 0 || instance.getEconomy().has(p, cost);
+    }
 
     public CostType getCostType() { return costType; }
 
     public boolean hasEXP(Player p) {
-        int exp = getCost(p);
-        return p.getTotalExperience() >= exp;
+        int required = getCost(p);
+        int exp = EXPUtils.getPlayerEXP(p);
+        return exp >= required;
     }
 
     public void withdrawEXP(Player p) {
         int exp = getCost(p);
-        int totalEXP = p.getTotalExperience();
-        p.setTotalExperience(totalEXP - exp);
+        EXPUtils.changePlayerEXP(p, -exp);
     }
 
+    public Material getCustomMaterial() { return material; }
+
     public boolean hasCustom(Player p) {
-        String custom = getType().toString();
-        if(custom.startsWith("CUSTOM:")) {
-            String name = custom.split(":")[1];
-            Material material = Material.getMaterial(name);
-            if(material != null) {
-                int required = getCost(p);
-                ItemStack itemStack = new ItemStack(material, required);
-                return p.getInventory().containsAtLeast(itemStack, required);
-            }
+        Material material = getCustomMaterial();
+        if(material != null) {
+            int required = getCost(p);
+            ItemStack itemStack = new ItemStack(material, required);
+            return p.getInventory().containsAtLeast(itemStack, required);
         }
         return false;
     }
 
     public void withdrawCustom(Player p) {
-        String custom = getType().toString();
-        if(custom.startsWith("CUSTOM:")) {
-            String name = custom.split(":")[1];
-            Material material = Material.getMaterial(name);
-            if(material != null) {
-                int required = getCost(p);
-                ItemStack itemStack = new ItemStack(material, required);
-                p.getInventory().removeItem(itemStack);
-            }
+        Material material = getCustomMaterial();
+        if(material != null) {
+            int required = getCost(p);
+            ItemStack itemStack = new ItemStack(material, required);
+            p.getInventory().removeItem(itemStack);
         }
     }
 

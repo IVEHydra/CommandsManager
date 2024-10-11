@@ -1,6 +1,8 @@
 package me.ivehydra.commandsmanager.command;
 
 import me.ivehydra.commandsmanager.CommandsManager;
+import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
@@ -70,7 +72,20 @@ public class CommandManager {
 
     private Command cooldownCommand(ConfigurationSection section) { return new Command(section.getString("permission"), section.getStringList("time.custom"), section.getInt("time.default"), section.getStringList("worlds"), section.getStringList("commands"), section.getStringList("actions")); }
 
-    private Command delayCommand(ConfigurationSection section) { return new Command(section.getString("permission"), section.getStringList("time.custom"), section.getInt("time.default"), section.getStringList("cost.custom"), section.getInt("cost.default"), section.getString("cost.type"), section.getString("loadingBarLength"), section.getStringList("worlds"), section.getStringList("commands"), section.getStringList("actions.onWait"), section.getStringList("actions.onSuccess"), section.getStringList("actions.onFail"));  }
+    private Command delayCommand(ConfigurationSection section) {
+        String costType = section.getString("cost.type");
+        Material material = null;
+
+        if(Objects.requireNonNull(costType).startsWith("CUSTOM:")) {
+            String name = costType.split(":")[1].toUpperCase();
+            material = Material.getMaterial(name);
+
+            if(material == null) instance.sendLog("[CommandsManager]" + ChatColor.RED + " Invalid Material: " + name);
+        }
+
+        return new Command(section.getString("permission"), section.getStringList("time.custom"), section.getInt("time.default"), section.getStringList("cost.custom"), section.getInt("cost.default"), section.getString("cost.type"), material, section.getString("loadingBarLength"), section.getStringList("worlds"), section.getStringList("commands"), section.getStringList("actions.onWait"), section.getStringList("actions.onSuccess"), section.getStringList("actions.onFail"));
+
+    }
 
     public CommandSettings getCommandSettings() { return commandSettings; }
 

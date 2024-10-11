@@ -24,7 +24,7 @@ messages:
     cost:
       noEXP: "%prefix% &cYou don't have enough experience(&e%command_cost%&c) to execute &e%command_name%&c."
       noMoney: "%prefix% &cYou don't have enough money(&e%command_cost%&c$) to execute &e%command_name%&c."
-      noCustom: "%prefix% &cYou don't have enough items(&e%command_cost%&c) to execute &e%command_name%&c."
+      noCustom: "%prefix% &cYou don't have enough &e%command_customMaterial%&c(&e%command_cost%&c) to execute &e%command_name%&c."
   time:
     seconds: " seconds"
     minutes: " minutes"
@@ -91,6 +91,8 @@ commandsSettings:
       #%command_cooldown% - Returns the cooldown time.
       #%cooldown_cost% - Returns the cost.
       #
+      #If PlaceholderAPI is installed, you can also use its placeholders.
+      #
       #PlaceholderAPI placeholder:
       #It needs PlaceholderAPI to work and this placeholder can be used by any plugin.
       #%commandsmanager_cooldown_/<command>% - Returns the cooldown time of the command.
@@ -148,7 +150,7 @@ commandsSettings:
         #This default delay time applies only to ranks/players without specific permissions for a custom delay.
         default: 20
       cost:
-        #Types: "EXPERIENCE", "CUSTOM".
+        #Types: "EXPERIENCE", "MONEY", "CUSTOM".
         #EXPERIENCE: Player's experience points will be used.
         #MONEY: Player's in-game currency will be used.
         #CUSTOM: Specific items will be used.

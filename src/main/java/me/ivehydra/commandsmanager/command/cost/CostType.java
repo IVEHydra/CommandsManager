@@ -12,6 +12,7 @@ public enum CostType {
     private static final CommandsManager instance = CommandsManager.getInstance();
 
     public static CostType fromString(String type) {
+        if(type.startsWith("CUSTOM:")) return CUSTOM;
         try {
             return CostType.valueOf(type.toUpperCase());
         } catch(IllegalArgumentException e) {
