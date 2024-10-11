@@ -18,7 +18,7 @@ messages:
     latestVersion: "%prefix% &aThis is the latest version of the plugin."
     newVersionAvailable:
       - "%prefix% &eThere is a new version available."
-      - "%prefix% &eYou can download it at: https://www.spigotmc.org/resources/commandsmanager-1-8-1-21-1-mysql.111108/"
+      - "%prefix% &eYou can download it at: https://www.spigotmc.org/resources/commandsmanager-1-8-1-21-1-mysql-custom-cooldowns-custom-delays-custom-costs.111108/"
   command:
     blockColons: "%prefix% &cYou can't use colons in the first argument of the command!"
     cost:
