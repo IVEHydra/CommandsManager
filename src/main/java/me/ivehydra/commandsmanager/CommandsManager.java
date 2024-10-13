@@ -25,10 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class CommandsManager extends JavaPlugin {
@@ -41,15 +38,15 @@ public class CommandsManager extends JavaPlugin {
     private CommandManager commandManager;
     private ActionManager actionManager;
     private CooldownManager cooldownManager;
-    private List<Player> delay;
-    private List<Player> delayFailed;
+    private Set<Player> delay;
+    private Set<Player> delayFailed;
 
     @Override
     public void onEnable() {
         instance = this;
         cooldownsConfiguration = new YamlConfiguration();
-        delay = new ArrayList<>();
-        delayFailed = new ArrayList<>();
+        delay = new HashSet<>();
+        delayFailed = new HashSet<>();
 
         if(!registerEconomy()) {
             Bukkit.getPluginManager().disablePlugin(this);
@@ -153,9 +150,9 @@ public class CommandsManager extends JavaPlugin {
 
     public CooldownManager getCooldownManager() { return this.cooldownManager; }
 
-    public List<Player> getDelay() { return delay; }
+    public Set<Player> getDelay() { return delay; }
 
-    public List<Player> getDelayFailed() { return delayFailed; }
+    public Set<Player> getDelayFailed() { return delayFailed; }
 
     private void registerCommands() {
         Objects.requireNonNull(getCommand("commandsmanager")).setExecutor(new CommandsManagerCommands());

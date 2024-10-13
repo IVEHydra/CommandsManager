@@ -40,7 +40,6 @@ public class EXPUtils {
 
         int newExp = current + exp;
         p.giveExp(newExp);
-
     }
 
 }

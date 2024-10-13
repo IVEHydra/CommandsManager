@@ -12,7 +12,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
-import java.util.List;
+import java.util.Set;
 
 public class PlayerCommandPreProcessListener implements Listener {
 
@@ -25,8 +25,8 @@ public class PlayerCommandPreProcessListener implements Listener {
         Player p = e.getPlayer();
         CommandManager commandManager = instance.getCommandManager();
         CommandSettings commandSettings = commandManager.getCommandSettings();
-        List<Player> delay = instance.getDelay();
-        List<Player> delayFailed = instance.getDelayFailed();
+        Set<Player> delay = instance.getDelay();
+        Set<Player> delayFailed = instance.getDelayFailed();
 
         if(commandSettings.isCommand() && delay.contains(p)) {
             e.setCancelled(true);

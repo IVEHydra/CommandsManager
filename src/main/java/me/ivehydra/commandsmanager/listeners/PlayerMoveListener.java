@@ -9,8 +9,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class PlayerMoveListener implements Listener {
 
@@ -21,8 +21,8 @@ public class PlayerMoveListener implements Listener {
         Player p = e.getPlayer();
         CommandManager commandManager = instance.getCommandManager();
         CommandSettings commandSettings = commandManager.getCommandSettings();
-        List<Player> delay = instance.getDelay();
-        List<Player> delayFailed = instance.getDelayFailed();
+        Set<Player> delay = instance.getDelay();
+        Set<Player> delayFailed = instance.getDelayFailed();
         Location to = e.getTo();
         Location from = e.getFrom();
 

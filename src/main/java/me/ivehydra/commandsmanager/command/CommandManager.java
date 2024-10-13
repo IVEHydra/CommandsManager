@@ -83,7 +83,7 @@ public class CommandManager {
             if(material == null) instance.sendLog("[CommandsManager]" + ChatColor.RED + " Invalid Material: " + name);
         }
 
-        return new Command(section.getString("permission"), section.getStringList("time.custom"), section.getInt("time.default"), section.getStringList("cost.custom"), section.getInt("cost.default"), section.getString("cost.type"), material, section.getString("loadingBarLength"), section.getStringList("worlds"), section.getStringList("commands"), section.getStringList("actions.onWait"), section.getStringList("actions.onSuccess"), section.getStringList("actions.onFail"));
+        return new Command(section.getString("permission"), section.getStringList("time.custom"), section.getInt("time.default"), section.getStringList("cost.custom"), section.getInt("cost.default"), costType, material, section.getString("loadingBarLength"), section.getStringList("worlds"), section.getStringList("commands"), section.getStringList("actions.onWait"), section.getStringList("actions.onSuccess"), section.getStringList("actions.onFail"));
 
     }
 

@@ -151,9 +151,9 @@ commandsSettings:
         default: 20
       cost:
         #Types: "EXPERIENCE", "MONEY", "CUSTOM".
-        #EXPERIENCE: Player's experience points will be used.
-        #MONEY: Player's in-game currency will be used.
-        #CUSTOM: Specific items will be used.
+        #EXPERIENCE: Player's experience points will be used as currency.
+        #MONEY: Player's in-game currency will be used as currency.
+        #CUSTOM: Specific items will be used as currency.
         #        To define the item, use the format CUSTOM:<material>, where <material> is the name of the item(CUSTOM:DIAMOND).
         type: "EXPERIENCE"
         #Define a custom cost for ranks/players who will have the permission.

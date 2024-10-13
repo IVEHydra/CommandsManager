@@ -9,7 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
-import java.util.List;
+import java.util.Set;
 
 public class EntityDamageByEntityListener implements Listener {
 
@@ -24,8 +24,8 @@ public class EntityDamageByEntityListener implements Listener {
             Player p = (Player) (entity instanceof Player ? entity : damager);
             CommandManager commandManager = instance.getCommandManager();
             CommandSettings commandSettings = commandManager.getCommandSettings();
-            List<Player> delay = instance.getDelay();
-            List<Player> delayFailed = instance.getDelayFailed();
+            Set<Player> delay = instance.getDelay();
+            Set<Player> delayFailed = instance.getDelayFailed();
 
             if(commandSettings.isDamage() && delay.contains(p)) {
                 delayFailed.add(p);

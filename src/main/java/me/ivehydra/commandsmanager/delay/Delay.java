@@ -8,33 +8,35 @@ import me.ivehydra.commandsmanager.utils.StringUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.List;
+import java.util.Set;
 
 public class Delay {
 
     private static final CommandsManager instance = CommandsManager.getInstance();
-    private static final List<Player> delay = instance.getDelay();
-    private static final List<Player> delayFailed = instance.getDelayFailed();
+    private static final Set<Player> delay = instance.getDelay();
+    private static final Set<Player> delayFailed = instance.getDelayFailed();
 
     public static void delay(Player p, String eCommand, Command command) {
         if(delayFailed.contains(p)) return;
-        if(!delay.contains(p)) delay.add(p);
+        delay.add(p);
 
-        int time = command.getTime(p);
-        int loadingBarLength = command.getLoadingBarLength(p);
-
-        BukkitRunnable delayRunnable = delayRunnable(p, eCommand, command, time, loadingBarLength);
+        BukkitRunnable delayRunnable = runnable(p, eCommand, command);
         delayRunnable.runTaskTimer(instance, 0L, 20L);
 
-        BukkitRunnable failRunnable = failRunnable(p, eCommand, command, delayRunnable);
-        failRunnable.runTaskTimer(instance, 0L, 5L);
     }
 
-    private static BukkitRunnable delayRunnable(Player p, String eCommand, Command command, int time, int loadingBarLength) {
+    private static BukkitRunnable runnable(Player p, String eCommand, Command command) {
         return new BukkitRunnable() {
             int currentTime = 0;
+            final int time = command.getTime(p);
+            final int loadingBarLength = command.getLoadingBarLength(p);
             @Override
             public void run() {
+                if(delayFailed.contains(p)) {
+                    handleFail(p, eCommand, command);
+                    cancel();
+                    return;
+                }
                 if(!delay.contains(p)) {
                     cancel();
                     return;
@@ -42,28 +44,20 @@ public class Delay {
                 currentTime++;
                 if(time > 0) ActionBar.sendActionBar(p, LoadingBar.getLoadingBar(currentTime, time, loadingBarLength, StringUtils.getColoredString(instance.getConfig().getString("loadingBar.completedColor")), StringUtils.getColoredString(instance.getConfig().getString("loadingBar.notCompletedColor")), instance.getConfig().getString("loadingBar.symbol")));
                 if(currentTime > time) {
-                    executeCommands(p, eCommand, command);
+                    handleDelay(p, eCommand, command);
                     cancel();
                 }
             }
         };
     }
 
-    private static BukkitRunnable failRunnable(Player p, String eCommand, Command command, BukkitRunnable runnable) {
-        return new BukkitRunnable() {
-            @Override
-            public void run() {
-                if(!delayFailed.contains(p)) return;
-                ActionBar.sendActionBar(p, "");
-                instance.getActionManager().execute(p, command.getActionsOnFail(), eCommand, command);
-                delayFailed.remove(p);
-                runnable.cancel();
-                cancel();
-            }
-        };
+    private static void handleFail(Player p, String eCommand, Command command) {
+        ActionBar.sendActionBar(p, "");
+        instance.getActionManager().execute(p, command.getActionsOnFail(), eCommand, command);
+        delayFailed.remove(p);
     }
 
-    private static void executeCommands(Player p, String eCommand, Command command) {
+    private static void handleDelay(Player p, String eCommand, Command command) {
         ActionBar.sendActionBar(p, "");
         switch(command.getCostType()) {
             case EXPERIENCE:
