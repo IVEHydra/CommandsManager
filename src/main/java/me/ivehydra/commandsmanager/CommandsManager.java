@@ -55,7 +55,7 @@ public class CommandsManager extends JavaPlugin {
 
         if(isPlaceholderAPIPresent()) {
             new PlaceholderAPI().register();
-            sendLog("[CommandsManager]" + ChatColor.GREEN + " PlaceholderAPI has been found. The cooldown placeholder is now available for use. The placeholders from PlaceholderAPI can now be used in Actions.");
+            sendLog("[CommandsManager]" + ChatColor.GREEN + " PlaceholderAPI has been found. The cooldown placeholder is now available for use. The placeholders from PlaceholderAPI can now be used for Actions.");
         } else sendLog("[CommandsManager]" + ChatColor.YELLOW + " PlaceholderAPI not found. The plugin will still function correctly, but the cooldown placeholder and the placeholders from PlaceholderAPI will not be available.");
 
         saveDefaultConfig();

@@ -79,7 +79,7 @@ public class CooldownManager {
     public String getFormattedCooldown(Player p, String eCommand, Command command) {
         long time = getCooldown(p, eCommand);
         long currentTime = System.currentTimeMillis();
-        long cooldown = command.getTime(p) * 1000L;
+        long cooldown = command.hasCooldown() ? command.getCooldownModule().getCooldownTime(p) * 1000L : 0L;
         long remainingTime = (time + cooldown) - currentTime;
 
         if(remainingTime > 0)

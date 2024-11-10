@@ -33,7 +33,7 @@ public class PlaceholderAPI extends PlaceholderExpansion {
             String string = identifier.replace("cooldown_", "");
             Command command = instance.getCommandManager().getCommandByIdentifier(string);
             if(command != null) {
-                if(!command.getWorlds().contains(p.getWorld()) || p.hasPermission("commandsmanager.*") || p.hasPermission(command.getPermission())) return MessageUtils.INACTIVE_COOLDOWN.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString());
+                if(!command.getWorlds().contains(p.getWorld()) || command.hasPermission(p)) return MessageUtils.INACTIVE_COOLDOWN.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString());
                 String cooldown = instance.getCooldownManager().getFormattedCooldown(p, string, command);
                 if(!cooldown.equals("0")) return MessageUtils.ACTIVE_COOLDOWN.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString(), "%command_cooldown%", cooldown);
                 return MessageUtils.INACTIVE_COOLDOWN.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString());

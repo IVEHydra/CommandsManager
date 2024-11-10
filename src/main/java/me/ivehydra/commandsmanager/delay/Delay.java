@@ -3,7 +3,7 @@ package me.ivehydra.commandsmanager.delay;
 import com.cryptomorin.xseries.messages.ActionBar;
 import me.ivehydra.commandsmanager.CommandsManager;
 import me.ivehydra.commandsmanager.command.Command;
-import me.ivehydra.commandsmanager.utils.MessageUtils;
+import me.ivehydra.commandsmanager.command.modules.DelayModule;
 import me.ivehydra.commandsmanager.utils.StringUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -16,20 +16,21 @@ public class Delay {
     private static final Set<Player> delay = instance.getDelay();
     private static final Set<Player> delayFailed = instance.getDelayFailed();
 
-    public static void delay(Player p, String eCommand, Command command) {
+    public static void delay(Player p, String eCommand, Command command, boolean withCooldown, String cooldown) {
         if(delayFailed.contains(p)) return;
         delay.add(p);
 
-        BukkitRunnable delayRunnable = runnable(p, eCommand, command);
+        BukkitRunnable delayRunnable = runnable(p, eCommand, command, withCooldown, cooldown);
         delayRunnable.runTaskTimer(instance, 0L, 20L);
 
     }
 
-    private static BukkitRunnable runnable(Player p, String eCommand, Command command) {
+    private static BukkitRunnable runnable(Player p, String eCommand, Command command, Boolean withCooldown, String cooldown) {
         return new BukkitRunnable() {
             int currentTime = 0;
-            final int time = command.getTime(p);
-            final int loadingBarLength = command.getLoadingBarLength(p);
+            final DelayModule delayModule = command.getDelayModule();
+            final int time = delayModule.getDelayTime(p);
+            final int loadingBarLength = delayModule.getLoadingBarLength(p);
             @Override
             public void run() {
                 if(delayFailed.contains(p)) {
@@ -44,7 +45,10 @@ public class Delay {
                 currentTime++;
                 if(time > 0) ActionBar.sendActionBar(p, LoadingBar.getLoadingBar(currentTime, time, loadingBarLength, StringUtils.getColoredString(instance.getConfig().getString("loadingBar.completedColor")), StringUtils.getColoredString(instance.getConfig().getString("loadingBar.notCompletedColor")), instance.getConfig().getString("loadingBar.symbol")));
                 if(currentTime > time) {
-                    handleDelay(p, eCommand, command);
+                    if(withCooldown)
+                        handleDelay(p, eCommand, command, cooldown);
+                    else
+                        handleDelay(p, eCommand, command, "");
                     cancel();
                 }
             }
@@ -53,41 +57,36 @@ public class Delay {
 
     private static void handleFail(Player p, String eCommand, Command command) {
         ActionBar.sendActionBar(p, "");
-        instance.getActionManager().execute(p, command.getActionsOnFail(), eCommand, command);
+        DelayModule delayModule = command.getDelayModule();
+        instance.getActionManager().execute(p, delayModule.getActionsOnFail(), eCommand, command);
         delayFailed.remove(p);
     }
 
-    private static void handleDelay(Player p, String eCommand, Command command) {
+    private static void handleDelay(Player p, String eCommand, Command command, String cooldown) {
         ActionBar.sendActionBar(p, "");
-        switch(command.getCostType()) {
-            case EXPERIENCE:
-                if(!command.hasEXP(p)) {
-                    p.sendMessage(MessageUtils.NO_EXPERIENCE.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString(), "%command_cost%", String.valueOf(command.getCost(p)), "%command_name%", eCommand));
-                    delay.remove(p);
-                    return;
-                }
-                command.withdrawEXP(p);
-                break;
-            case MONEY:
-                if(!command.hasMoney(p)) {
-                    p.sendMessage(MessageUtils.NO_MONEY.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString(), "%command_cost%", String.valueOf(command.getCost(p)), "%command_name%", eCommand));
-                    delay.remove(p);
-                    return;
-                }
-                instance.getEconomy().withdrawPlayer(p, command.getCost(p));
-                break;
-            case CUSTOM:
-                if(!command.hasCustom(p)) {
-                    p.sendMessage(MessageUtils.NO_CUSTOM.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString(), "%command_customMaterial%", command.getCustomMaterial().name(), "%command_cost%", String.valueOf(command.getCost(p)), "%command_name%", eCommand));
-                    delay.remove(p);
-                    return;
-                }
-                command.withdrawCustom(p);
-                break;
+        DelayModule delayModule = command.getDelayModule();
+
+        if(!handleCost(p, delayModule, eCommand)) {
+            delay.remove(p);
+            return;
         }
+
         p.performCommand(eCommand.replace("/", ""));
-        instance.getActionManager().execute(p, command.getActionsOnSuccess(), eCommand, command);
+        instance.getActionManager().execute(p, delayModule.getActionsOnSuccess(), eCommand, command);
+
+        if(!cooldown.isEmpty()) {
+            long currentTime = System.currentTimeMillis();
+            instance.getCooldownManager().setCooldown(p, cooldown, currentTime);
+        }
+
         delay.remove(p);
+    }
+
+    private static boolean handleCost(Player p, DelayModule delayModule, String eCommand) {
+        if(delayModule.hasMoney(p, eCommand)) {
+            delayModule.withdrawMoney(p);
+            return true;
+        } else return false;
     }
 
 }

@@ -18,7 +18,7 @@ messages:
     latestVersion: "%prefix% &aThis is the latest version of the plugin."
     newVersionAvailable:
       - "%prefix% &eThere is a new version available."
-      - "%prefix% &eYou can download it at: https://www.spigotmc.org/resources/commandsmanager-1-8-1-21-1-mysql-custom-cooldowns-custom-delays-custom-costs.111108/"
+      - "%prefix% &eYou can download it at: https://www.spigotmc.org/resources/commandsmanager-1-8-1-21-3-mysql-custom-cooldowns-custom-delays-custom-costs.111108/"
   command:
     blockColons: "%prefix% &cYou can't use colons in the first argument of the command!"
     cost:
@@ -62,10 +62,11 @@ commandsSettings:
   #
   commands:
     test1:
-      #Types: "BLOCK", "COOLDOWN" and "DELAY".
+      #Types: "BLOCK", "COOLDOWN", "DELAY" and "COOLDOWN_DELAY".
       #BLOCK: Blocks any command.
       #COOLDOWN: Adds a Cooldown to any command.
       #DELAY: Adds a Delay with Cost to any command.
+      #COOLDOWN_DELAY: Adds a Cooldown and a Delay with Cost to any command.
       type: "BLOCK"
       #With this permission, the block will be bypassed.
       permission: "commandsmanager.test1"
@@ -87,7 +88,8 @@ commandsSettings:
       #%prefix% - Returns the prefix.
       #%player_name% - Returns the player's name.
       #%command_name% - Returns the name of the command.
-      #%command_time% - Returns the time of the command.
+      #%command_time_cooldown% - Returns the time of cooldown of the command.
+      #%command_time_delay% - Returns the time of delay of the command.
       #%command_cooldown% - Returns the cooldown time.
       #%cooldown_cost% - Returns the cost.
       #
@@ -180,7 +182,7 @@ commandsSettings:
       actions:
         onWait:
           - "[SOUND] ENTITY_EXPERIENCE_ORB_PICKUP;1.0;1.0"
-          - "[MESSAGE] %prefix% &cYou need to wait &e%command_time% &cseconds to execute &e%command_name%&c."
+          - "[MESSAGE] %prefix% &cYou need to wait &e%command_time_delay% &cseconds to execute &e%command_name%&c."
         onSuccess:
           - "[SOUND] ENTITY_EXPERIENCE_ORB_PICKUP;1.0;1.0"
           - "[TITLE] &aSUCCESS;&7Thanks for waiting!;1;2;1"
@@ -189,32 +191,42 @@ commandsSettings:
           - "[SOUND] ENTITY_EXPERIENCE_ORB_PICKUP;1.0;1.0"
           - "[ACTIONBAR] &cYou don't have to do anything while waiting!"
     test4:
-      type: "DELAY"
+      type: "COOLDOWN_DELAY"
+      #With this permission, the cooldown and the delay will be bypassed.
       permission: "commandsmanager.test4"
       time:
-        custom:
-          - "commandsmanager.test4.time.vip;0"
-        default: 5
+        cooldown:
+          custom:
+            - "commandsmanager.test4.time.cooldown.vip;5"
+          default: 10
+        delay:
+          custom:
+            - "commandsmanager.test4.time.delay.vip;5"
+          default: 10
       cost:
         type: "MONEY"
         custom:
           - "commandsmanager.test4.cost.vip;0"
-        default: 10
+        default: 5
       loadingBarLength: 5
       worlds:
         - "world"
+        - "world_nether"
+        - "world_the_end"
       commands:
         - "/rtp"
       actions:
         onWait:
           - "[SOUND] ENTITY_EXPERIENCE_ORB_PICKUP;1.0;1.0"
-          - "[MESSAGE] %prefix% &cYou need to wait &e%command_time% &cseconds to execute &e%command_name%&c."
-          - "[MESSAGE] %prefix% &cAfter waiting, &e%command_cost%&c$ will be taken from you."
+          - "[MESSAGE] %prefix% &cYou need to wait &e%command_time_delay% &cseconds to execute &e%command_name%&c."
         onSuccess:
           - "[SOUND] ENTITY_EXPERIENCE_ORB_PICKUP;1.0;1.0"
-          - "[MESSAGE] %prefix% &c- &e%command_cost%&c$"
           - "[TITLE] &aSUCCESS;&7Thanks for waiting!;1;2;1"
           - "[ACTIONBAR] &aSUCCESS"
         onFail:
-          - "[SOUND] ENTITY_EXPERIENCE_ORB_PICKUP;1.0;1.0"
-          - "[ACTIONBAR] &cYou don't have to do anything while waiting!"
+          cooldown:
+            - "[SOUND] ENTITY_EXPERIENCE_ORB_PICKUP;1.0;1.0"
+            - "[MESSAGE] %prefix% &cYou need to wait &e%command_cooldown% &cto execute &e%command_name%&c."
+          delay:
+            - "[SOUND] ENTITY_EXPERIENCE_ORB_PICKUP;1.0;1.0"
+            - "[ACTIONBAR] &cYou don't have to do anything while waiting!"

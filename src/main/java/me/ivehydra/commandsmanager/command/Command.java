@@ -1,13 +1,11 @@
 package me.ivehydra.commandsmanager.command;
 
-import me.ivehydra.commandsmanager.CommandsManager;
-import me.ivehydra.commandsmanager.command.cost.CostType;
-import me.ivehydra.commandsmanager.utils.EXPUtils;
+import me.ivehydra.commandsmanager.command.modules.BlockModule;
+import me.ivehydra.commandsmanager.command.modules.CooldownModule;
+import me.ivehydra.commandsmanager.command.modules.DelayModule;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.Objects;
@@ -17,112 +15,25 @@ import java.util.stream.IntStream;
 
 public class Command {
 
-    private final CommandsManager instance = CommandsManager.getInstance();
     private final String permission;
-    private final CommandType type;
-    private List<String> timeList;
-    private int defaultTime;
-    private CostType costType;
-    private Material material;
-    private List<String> costList;
-    private int defaultCost;
-    private String loadingBarLength;
     private final List<World> worlds;
     private final List<String> commands;
-    private List<String> actions;
-    private List<String> actionsOnWait;
-    private List<String> actionsOnSuccess;
-    private List<String> actionsOnFail;
+    private final Optional<BlockModule> blockModule;
+    private final Optional<CooldownModule> cooldownModule;
+    private final Optional<DelayModule> delayModule;
 
-    public Command(String permission, List<String> worlds, List<String> commands, List<String> actions) {
+    public Command(String permission, List<String> worlds, List<String> commands, Optional<BlockModule> blockModule, Optional<CooldownModule> cooldownModule, Optional<DelayModule> delayModule) {
         this.permission = permission;
-        this.type = CommandType.BLOCK;
         this.worlds = loadWorlds(worlds);
         this.commands = commands;
-        this.actions = actions;
-    }
-
-    public Command(String permission, List<String> timeList, int defaultTime, List<String> worlds, List<String> commands, List<String> actions) {
-        this.permission = permission;
-        this.type = CommandType.COOLDOWN;
-        this.timeList = timeList;
-        this.defaultTime = defaultTime;
-        this.worlds = loadWorlds(worlds);
-        this.commands = commands;
-        this.actions = actions;
-    }
-
-    public Command(String permission, List<String> timeList, int defaultTime, List<String> costList, int defaultCost, String costType, Material material, String loadingBarLength, List<String> worlds, List<String> commands, List<String> actionsOnWait, List<String> actionsOnSuccess, List<String> actionsOnFail) {
-        this.permission = permission;
-        this.type = CommandType.DELAY;
-        this.timeList = timeList;
-        this.defaultTime = defaultTime;
-        this.costList = costList;
-        this.defaultCost = defaultCost;
-        this.costType = CostType.fromString(costType);
-        this.material = material;
-        this.loadingBarLength = loadingBarLength;
-        this.worlds = loadWorlds(worlds);
-        this.commands = commands;
-        this.actionsOnWait = actionsOnWait;
-        this.actionsOnSuccess = actionsOnSuccess;
-        this.actionsOnFail = actionsOnFail;
+        this.blockModule = blockModule;
+        this.cooldownModule = cooldownModule;
+        this.delayModule = delayModule;
     }
 
     public String getPermission() { return permission; }
 
-    public CommandType getType() { return type; }
-
-    public int getTime(Player p) {
-        if(timeList == null || timeList.isEmpty()) return defaultTime;
-        return timeList.stream().map(key -> key.split(";")).filter(args -> args.length == 2 && p.hasPermission(args[0])).map(args -> Integer.parseInt(args[1])).findFirst().orElse(defaultTime);
-    }
-
-    public int getLoadingBarLength(Player p) { return "%command_time%".equals(loadingBarLength) ? getTime(p) : Integer.parseInt(loadingBarLength); }
-
-    public int getCost(Player p) {
-        if(costList == null || costList.isEmpty()) return defaultCost;
-        return costList.stream().map(key -> key.split(";")).filter(args -> args.length == 2 && p.hasPermission(args[0])).map(args -> Integer.parseInt(args[1])).findFirst().orElse(defaultCost);
-    }
-
-    public boolean hasMoney(Player p) {
-        int cost = getCost(p);
-        return cost == 0 || instance.getEconomy().has(p, cost);
-    }
-
-    public CostType getCostType() { return costType; }
-
-    public boolean hasEXP(Player p) {
-        int required = getCost(p);
-        int exp = EXPUtils.getPlayerEXP(p);
-        return exp >= required;
-    }
-
-    public void withdrawEXP(Player p) {
-        int exp = getCost(p);
-        EXPUtils.changePlayerEXP(p, -exp);
-    }
-
-    public Material getCustomMaterial() { return material; }
-
-    public boolean hasCustom(Player p) {
-        Material material = getCustomMaterial();
-        if(material != null) {
-            int required = getCost(p);
-            ItemStack itemStack = new ItemStack(material, required);
-            return p.getInventory().containsAtLeast(itemStack, required);
-        }
-        return false;
-    }
-
-    public void withdrawCustom(Player p) {
-        Material material = getCustomMaterial();
-        if(material != null) {
-            int required = getCost(p);
-            ItemStack itemStack = new ItemStack(material, required);
-            p.getInventory().removeItem(itemStack);
-        }
-    }
+    public boolean hasPermission(Player p) { return p.hasPermission("commandsmanager.*") || p.hasPermission(getPermission()); }
 
     private List<World> loadWorlds(List<String> worlds) { return worlds.stream().map(Bukkit::getWorld).filter(Objects::nonNull).collect(Collectors.toList()); }
 
@@ -137,12 +48,16 @@ public class Command {
 
     private boolean matchesCommand(String[] commandArgs, String[] blockedCommandArgs) { return IntStream.range(0, Math.min(blockedCommandArgs.length, commandArgs.length)).allMatch(i -> blockedCommandArgs[i].equals(commandArgs[i])) && blockedCommandArgs.length <= commandArgs.length; }
 
-    public List<String> getActions() { return actions; }
+    public boolean hasBlock() { return blockModule.isPresent(); }
 
-    public List<String> getActionsOnWait() { return actionsOnWait; }
+    public boolean hasCooldown() { return cooldownModule.isPresent(); }
 
-    public List<String> getActionsOnSuccess() { return actionsOnSuccess; }
+    public boolean hasDelay() { return delayModule.isPresent(); }
 
-    public List<String> getActionsOnFail() { return actionsOnFail; }
+    public BlockModule getBlockModule() { return blockModule.orElse(null); }
+
+    public CooldownModule getCooldownModule() { return cooldownModule.orElse(null); }
+
+    public DelayModule getDelayModule() { return delayModule.orElse(null); }
 
 }

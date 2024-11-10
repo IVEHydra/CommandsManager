@@ -46,10 +46,11 @@ public class ActionManager {
                         .replace("%prefix%", MessageUtils.PREFIX.toString())
                         .replace("%player_name%", p.getName())
                         .replace("%command_name%", data)
-                        .replace("%command_time%", String.valueOf(command.getTime(p)))
+                        .replace("%command_time_delay%", command.hasDelay() ? String.valueOf(command.getDelayModule().getDelayTime(p)) : "0")
+                        .replace("%command_time_cooldown%", command.hasCooldown() ? String.valueOf(command.getCooldownModule().getCooldownTime(p)) : "0")
                         .replace("%command_cooldown%", instance.getCooldownManager().getFormattedCooldown(p, data, command))
-                        .replace("%command_cost%", String.valueOf(command.getCost(p))
-                ));
+                        .replace("%command_cost%", command.hasDelay() ? String.valueOf(command.getDelayModule().getCost(p)) : "0")
+                );
                 string = instance.isPlaceholderAPIPresent() ? PlaceholderAPI.setPlaceholders(p, string) : string;
                 action.execute(p, string);
             }
