@@ -25,7 +25,7 @@ public class Delay {
 
     }
 
-    private static BukkitRunnable runnable(Player p, String eCommand, Command command, Boolean withCooldown, String cooldown) {
+    private static BukkitRunnable runnable(Player p, String eCommand, Command command, boolean withCooldown, String cooldown) {
         return new BukkitRunnable() {
             int currentTime = 0;
             final DelayModule delayModule = command.getDelayModule();
@@ -42,15 +42,16 @@ public class Delay {
                     cancel();
                     return;
                 }
-                currentTime++;
                 if(time > 0) ActionBar.sendActionBar(p, LoadingBar.getLoadingBar(currentTime, time, loadingBarLength, StringUtils.getColoredString(instance.getConfig().getString("loadingBar.completedColor")), StringUtils.getColoredString(instance.getConfig().getString("loadingBar.notCompletedColor")), instance.getConfig().getString("loadingBar.symbol")));
-                if(currentTime > time) {
+                if(currentTime == time) {
                     if(withCooldown)
                         handleDelay(p, eCommand, command, cooldown);
                     else
                         handleDelay(p, eCommand, command, "");
                     cancel();
+                    return;
                 }
+                currentTime++;
             }
         };
     }

@@ -28,9 +28,8 @@ public class CommandManager {
 
     private CommandSettings loadSettings() {
         ConfigurationSection section = instance.getConfig().getConfigurationSection("commandsSettings");
-        boolean colons = true;
         if(section != null) {
-            colons = section.getBoolean("blockColons");
+            boolean colons = section.getBoolean("blockColons");
             ConfigurationSection delay = section.getConfigurationSection("delayCommandCancel");
             if(delay != null) {
                 boolean command = delay.getBoolean("onPlayerCommandProcessEvent");
@@ -42,7 +41,7 @@ public class CommandManager {
                 return new CommandSettings(colons, command, chat, move, interact, damage);
             }
         }
-        return new CommandSettings(colons, true, true, true, true, true);
+        return new CommandSettings(true, true, true, true, true, true);
     }
 
     private void load() {

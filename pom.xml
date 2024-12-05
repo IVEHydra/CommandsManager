@@ -6,7 +6,7 @@
 
     <groupId>me.ivehydra</groupId>
     <artifactId>CommandsManager</artifactId>
-    <version>3.1</version>
+    <version>3.1.1</version>
     <packaging>jar</packaging>
 
     <name>CommandsManager</name>
@@ -101,6 +101,8 @@
                                         <exclude>com/cryptomorin/xseries/profiles/objects/transformer/TransformableProfile*</exclude>
                                         <exclude>com/cryptomorin/xseries/profiles/ProfileLogger*</exclude>
                                         <exclude>com/cryptomorin/xseries/profiles/objects/DelegateProfileable*</exclude>
+                                        <exclude>com/cryptomorin/xseries/XAttribute*</exclude>
+                                        <exclude>com/cryptomorin/xseries/StandardSound*</exclude>
                                     </excludes>
                                 </filter>
                             </filters>
@@ -142,7 +144,7 @@
         <dependency>
             <groupId>com.github.cryptomorin</groupId>
             <artifactId>XSeries</artifactId>
-            <version>11.3.0</version>
+            <version>12.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.github.MilkBowl</groupId>

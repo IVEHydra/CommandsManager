@@ -22,7 +22,7 @@ public class CooldownManager {
     }
 
     private void load() {
-        if(MySQL.isEnabled() || !instance.getCooldownsFile().contains("cooldowns")) return;
+        if(MySQL.isEnabled()) return;
         ConfigurationSection section = instance.getCooldownsFile().getConfigurationSection("cooldowns");
         if(section == null) return;
 

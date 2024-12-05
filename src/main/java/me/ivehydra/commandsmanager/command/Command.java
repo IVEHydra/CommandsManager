@@ -31,9 +31,7 @@ public class Command {
         this.delayModule = delayModule;
     }
 
-    public String getPermission() { return permission; }
-
-    public boolean hasPermission(Player p) { return p.hasPermission("commandsmanager.*") || p.hasPermission(getPermission()); }
+    public boolean hasPermission(Player p) { return p.hasPermission("commandsmanager.*") || p.hasPermission(permission); }
 
     private List<World> loadWorlds(List<String> worlds) { return worlds.stream().map(Bukkit::getWorld).filter(Objects::nonNull).collect(Collectors.toList()); }
 
