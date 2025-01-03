@@ -16,16 +16,16 @@ public class Delay {
     private static final Set<Player> delay = instance.getDelay();
     private static final Set<Player> delayFailed = instance.getDelayFailed();
 
-    public static void delay(Player p, String eCommand, Command command, boolean withCooldown, String cooldown) {
+    public static void delay(Player p, String eCommand, Command command, String cooldown) {
         if(delayFailed.contains(p)) return;
         delay.add(p);
 
-        BukkitRunnable delayRunnable = runnable(p, eCommand, command, withCooldown, cooldown);
+        BukkitRunnable delayRunnable = runnable(p, eCommand, command, cooldown);
         delayRunnable.runTaskTimer(instance, 0L, 20L);
 
     }
 
-    private static BukkitRunnable runnable(Player p, String eCommand, Command command, boolean withCooldown, String cooldown) {
+    private static BukkitRunnable runnable(Player p, String eCommand, Command command, String cooldown) {
         return new BukkitRunnable() {
             int currentTime = 0;
             final DelayModule delayModule = command.getDelayModule();
@@ -44,7 +44,7 @@ public class Delay {
                 }
                 if(time > 0) ActionBar.sendActionBar(p, LoadingBar.getLoadingBar(currentTime, time, loadingBarLength, StringUtils.getColoredString(instance.getConfig().getString("loadingBar.completedColor")), StringUtils.getColoredString(instance.getConfig().getString("loadingBar.notCompletedColor")), instance.getConfig().getString("loadingBar.symbol")));
                 if(currentTime == time) {
-                    if(withCooldown)
+                    if(!cooldown.isEmpty())
                         handleDelay(p, eCommand, command, cooldown);
                     else
                         handleDelay(p, eCommand, command, "");

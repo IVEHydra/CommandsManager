@@ -90,7 +90,7 @@ public class PlayerCommandPreProcessListener implements Listener {
                 } else {
                     if(handleCost(e, p, eCommand, delayModule)) {
                         e.setCancelled(true);
-                        if(!delay.contains(p)) Delay.delay(p, eCommand, command, true, string);
+                        if(!delay.contains(p)) Delay.delay(p, eCommand, command, string);
                         instance.getActionManager().execute(p, delayModule.getActionsOnWait(), eCommand, command);
                     }
                 }
@@ -123,7 +123,7 @@ public class PlayerCommandPreProcessListener implements Listener {
         } else {
             if(handleCost(e, p, eCommand, delayModule)) {
                 e.setCancelled(true);
-                if(!delay.contains(p)) Delay.delay(p, eCommand, command, false, "");
+                if(!delay.contains(p)) Delay.delay(p, eCommand, command, "");
                 instance.getActionManager().execute(p, delayModule.getActionsOnWait(), eCommand, command);
             }
         }

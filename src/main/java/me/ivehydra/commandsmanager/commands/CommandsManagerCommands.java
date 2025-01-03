@@ -34,7 +34,7 @@ public class CommandsManagerCommands implements CommandExecutor {
                         break;
                     default:
                         sender.sendMessage(MessageUtils.WRONG_ARGUMENTS.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString()));
-                        return true;
+                        break;
                 }
                 return true;
             }
@@ -68,7 +68,7 @@ public class CommandsManagerCommands implements CommandExecutor {
                     break;
                 default:
                     p.sendMessage(MessageUtils.WRONG_ARGUMENTS.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString()));
-                    return true;
+                    break;
             }
         }
         return true;

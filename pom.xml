@@ -6,7 +6,7 @@
 
     <groupId>me.ivehydra</groupId>
     <artifactId>CommandsManager</artifactId>
-    <version>3.1.2</version>
+    <version>3.1.3</version>
     <packaging>jar</packaging>
 
     <name>CommandsManager</name>
@@ -108,8 +108,6 @@
                                         <exclude>com/cryptomorin/xseries/base/annotations/XChange*</exclude>
                                         <exclude>com/cryptomorin/xseries/base/annotations/XChanges*</exclude>
                                         <exclude>com/cryptomorin/xseries/base/annotations/XInfo*</exclude>
-                                        <exclude>com/cryptomorin/xseries/base/annotations/XMerge*</exclude>
-                                        <exclude>com/cryptomorin/xseries/base/annotations/XMerges*</exclude>
                                     </excludes>
                                 </filter>
                             </filters>
@@ -151,7 +149,7 @@
         <dependency>
             <groupId>com.github.cryptomorin</groupId>
             <artifactId>XSeries</artifactId>
-            <version>12.1.0</version>
+            <version>13.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.github.MilkBowl</groupId>
