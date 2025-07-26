@@ -6,7 +6,7 @@
 
     <groupId>me.ivehydra</groupId>
     <artifactId>CommandsManager</artifactId>
-    <version>3.1.3</version>
+    <version>3.1.4</version>
     <packaging>jar</packaging>
 
     <name>CommandsManager</name>
@@ -68,9 +68,9 @@
                                         <exclude>com/cryptomorin/xseries/NoteBlockMusic*</exclude>
                                         <exclude>com/cryptomorin/xseries/particles/XParticle*</exclude>
                                         <exclude>com/cryptomorin/xseries/particles/ParticleDisplay*</exclude>
+                                        <exclude>com/cryptomorin/xseries/particles/Particles*</exclude>
                                         <exclude>com/cryptomorin/xseries/XWorldBorder*</exclude>
                                         <exclude>com/cryptomorin/xseries/abstractions/Material*</exclude>
-                                        <exclude>com/cryptomorin/xseries/particles/Particles*</exclude>
                                         <exclude>com/cryptomorin/xseries/profiles/ProfilesCore*</exclude>
                                         <exclude>com/cryptomorin/xseries/profiles/PlayerUUIDs*</exclude>
                                         <exclude>com/cryptomorin/xseries/profiles/PlayerProfiles*</exclude>
@@ -105,9 +105,22 @@
                                         <exclude>com/cryptomorin/xseries/StandardSound*</exclude>
                                         <exclude>com/cryptomorin/xseries/XItemFlag*</exclude>
                                         <exclude>com/cryptomorin/xseries/XPatternType*</exclude>
-                                        <exclude>com/cryptomorin/xseries/base/annotations/XChange*</exclude>
-                                        <exclude>com/cryptomorin/xseries/base/annotations/XChanges*</exclude>
-                                        <exclude>com/cryptomorin/xseries/base/annotations/XInfo*</exclude>
+                                        <exclude>com/cryptomorin/xseries/art/BukkitArt*</exclude>
+                                        <exclude>com/cryptomorin/xseries/art/NewArt*</exclude>
+                                        <exclude>com/cryptomorin/xseries/art/OldArt*</exclude>
+                                        <exclude>com/cryptomorin/xseries/art/XArt*</exclude>
+                                        <exclude>com/cryptomorin/xseries/inventory/BukkitInventoryView*</exclude>
+                                        <exclude>com/cryptomorin/xseries/inventory/NewInventoryView*</exclude>
+                                        <exclude>com/cryptomorin/xseries/inventory/OldInventoryView*</exclude>
+                                        <exclude>com/cryptomorin/xseries/inventory/XInventoryView*</exclude>
+                                        <exclude>com/cryptomorin/xseries/AbstractReferencedClass*</exclude>
+                                        <exclude>com/cryptomorin/xseries/base/XNamespacedKey*</exclude>
+                                        <exclude>com/cryptomorin/xseries/profiles/lock/FinalizedKeyedLock*</exclude>
+                                        <exclude>com/cryptomorin/xseries/profiles/lock/KeyedLock*</exclude>
+                                        <exclude>com/cryptomorin/xseries/profiles/lock/KeyedLockMap*</exclude>
+                                        <exclude>com/cryptomorin/xseries/profiles/lock/MojangRequestQueue*</exclude>
+                                        <exclude>com/cryptomorin/xseries/profiles/lock/NulledKeyedLock*</exclude>
+                                        <exclude>com/cryptomorin/xseries/profiles/lock/ReferentialKeyedLock*</exclude>
                                     </excludes>
                                 </filter>
                             </filters>
@@ -135,7 +148,7 @@
         </repository>
         <repository>
             <id>placeholderapi</id>
-            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+            <url>https://repo.extendedclip.com/releases/</url>
         </repository>
     </repositories>
 
@@ -149,7 +162,7 @@
         <dependency>
             <groupId>com.github.cryptomorin</groupId>
             <artifactId>XSeries</artifactId>
-            <version>13.0.0</version>
+            <version>13.3.3</version>
         </dependency>
         <dependency>
             <groupId>com.github.MilkBowl</groupId>

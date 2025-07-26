@@ -57,16 +57,8 @@ public class MySQL {
     public static void setCooldown(String uuid, String name, Cooldown cooldown) {
         Bukkit.getScheduler().runTaskAsynchronously(instance, () -> {
             try(Connection connection = instance.getMySQLConnection().getConnection()) {
-                if(cooldown == null) {
-                    try(PreparedStatement statement = connection.prepareStatement("INSERT INTO cooldowns (UUID,PLAYER_NAME,COMMAND,COOLDOWN) VALUE (?,?,?,?)")) {
-                        statement.setString(1, uuid);
-                        statement.setString(2, name);
-                        statement.setString(3, "name");
-                        statement.setLong(4, 0);
-                        statement.executeUpdate();
-                    }
+                if(cooldown == null)
                     return;
-                }
                 int rows;
                 try(PreparedStatement statement = connection.prepareStatement("UPDATE cooldowns SET cooldown=?, player_name=? WHERE (uuid=? AND command=?)")) {
                     statement.setLong(1, cooldown.getCooldown());
@@ -85,6 +77,33 @@ public class MySQL {
                     }
                 }
             } catch(SQLException e) {
+                instance.sendLog("[CommandsManager]" + ChatColor.RED + " Error details: " + e.getMessage());
+            }
+        });
+    }
+
+    public static void removeCooldown(String uuid, String command) {
+        Bukkit.getScheduler().runTaskAsynchronously(instance, () -> {
+            try(Connection connection = instance.getMySQLConnection().getConnection()) {
+                PreparedStatement statement = connection.prepareStatement("DELETE FROM cooldowns WHERE uuid=? AND command=?");
+                statement.setString(1, uuid);
+                statement.setString(2, command);
+                statement.executeUpdate();
+            } catch(SQLException e) {
+                instance.sendLog("[CommandsManager]" + ChatColor.RED + " Failed to remove cooldown for UUID: " + uuid + ", command: " + command);
+                instance.sendLog("[CommandsManager]" + ChatColor.RED + " Error details: " + e.getMessage());
+            }
+        });
+    }
+
+    public static void removeAllCooldowns(String uuid) {
+        Bukkit.getScheduler().runTaskAsynchronously(instance, () -> {
+            try(Connection connection = instance.getMySQLConnection().getConnection()) {
+                PreparedStatement statement = connection.prepareStatement("DELETE FROM cooldowns WHERE uuid=?");
+                statement.setString(1, uuid);
+                statement.executeUpdate();
+            } catch(SQLException e) {
+                instance.sendLog("[CommandsManager]" + ChatColor.RED + " Failed to remove cooldown for UUID: " + uuid);
                 instance.sendLog("[CommandsManager]" + ChatColor.RED + " Error details: " + e.getMessage());
             }
         });

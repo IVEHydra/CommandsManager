@@ -20,6 +20,7 @@ public class CommandsManagerTabCompleter implements TabCompleter {
             if(args.length == 1) {
                 if(hasPermission(sender, "commandsmanager.help")) argsList.add("help");
                 if(hasPermission(sender, "commandsmanager.reload"))  argsList.add("reload");
+                if(hasPermission(sender, "commandsmanager.reset")) argsList.add("reset");
                 return argsList.stream().filter(string -> string.startsWith(args[0])).collect(Collectors.toList());
             }
             return argsList;

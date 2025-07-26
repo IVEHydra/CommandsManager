@@ -21,6 +21,11 @@ messages:
       - "%prefix% &eYou can download it at: https://www.spigotmc.org/resources/commandsmanager-1-8-1-21-4-mysql-custom-cooldowns-custom-delays-custom-costs.111108/"
   command:
     blockColons: "%prefix% &cYou can't use colons in the first argument of the command!"
+    reset:
+      noPlayer: "%prefix% &cNo data found for &e%player_name%&c."
+      noCooldown: "%prefix% &e%player_name% &chas no cooldown for the command: &e%command_name%&c!"
+      cooldownRemoved: "%prefix% &e%player_name%'s &2cooldown for the command: &e%command_name% &2has been removed!"
+      allCooldownsRemoved: "%prefix% &2All &e%player_name%'s&2 cooldowns have been removed!"
     cost:
       noEXP: "%prefix% &cYou don't have enough experience(&e%command_cost%&c) to execute &e%command_name%&c."
       noMoney: "%prefix% &cYou don't have enough money(&e%command_cost%&c$) to execute &e%command_name%&c."

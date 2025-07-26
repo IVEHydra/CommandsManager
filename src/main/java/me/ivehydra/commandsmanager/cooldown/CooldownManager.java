@@ -57,7 +57,44 @@ public class CooldownManager {
 
     public void removePlayerCooldown(String name) { players.removeIf(pc -> pc.getName().equals(name)); }
 
+    public void removeCooldown(String name, String command) {
+        PlayerCooldown pc = getPlayerFromName(name);
+        if(pc == null) return;
+
+        Cooldown cooldown = pc.getCooldownByCommand(command);
+        if(cooldown == null) return;
+
+        pc.getCooldowns().remove(cooldown);
+
+        String uuid = pc.getUUID();
+
+        if(MySQL.isEnabled())
+            MySQL.removeCooldown(uuid, command);
+        else {
+            instance.getCooldownsFile().set("cooldowns." + uuid + "." + command, null);
+            instance.saveCooldownsFile();
+        }
+    }
+
+    public void removeAllCooldowns(String name) {
+        PlayerCooldown pc = getPlayerFromName(name);
+        if(pc == null) return;
+
+        pc.getCooldowns().clear();
+
+        String uuid = pc.getUUID();
+
+        if(MySQL.isEnabled())
+            MySQL.removeAllCooldowns(uuid);
+        else {
+            instance.getCooldownsFile().set("cooldowns." + uuid, null);
+            instance.saveCooldownsFile();
+        }
+    }
+
     public PlayerCooldown getPlayerFromUUID(String uuid) { return players.stream().filter(pc -> pc.getUUID().equals(uuid)).findFirst().orElse(null); }
+
+    public PlayerCooldown getPlayerFromName(String name) { return players.stream().filter(pc -> pc.getName().equalsIgnoreCase(name)).findFirst().orElse(null); }
 
     public void setCooldown(Player p, String command, long time) {
         PlayerCooldown pc = getPlayerFromUUID(p.getUniqueId().toString());
@@ -67,7 +104,10 @@ public class CooldownManager {
         }
         Cooldown cooldown = pc.getCooldownByCommand(command);
         if(cooldown != null) cooldown.setCooldown(time);
-        else pc.getCooldowns().add(new Cooldown(command, time));
+        else {
+            cooldown = new Cooldown(command, time);
+            pc.getCooldowns().add(cooldown);
+        }
         if(MySQL.isEnabled()) MySQL.setCooldown(pc.getUUID(), pc.getName(), cooldown);
     }
 
