@@ -80,7 +80,7 @@ public class CommandsManagerCommands implements CommandExecutor {
     }
 
     private void sendHelp(CommandSender sender) {
-        sender.sendMessage(ChatColor.GRAY + "------- " + ChatColor.RED + "CommandsManager by " + ChatColor.YELLOW + "IVEHydra" + ChatColor.GRAY + " v" + ChatColor.RED + instance.getDescription().getVersion() + ChatColor.GRAY + " -------");
+        sendNoHelp(sender);
         sender.sendMessage(ChatColor.RED + "Commands:");
         sender.sendMessage(ChatColor.RED + "/commandsmanager help" + ChatColor.GRAY + " - Sends a message with all commands and permissions.");
         sender.sendMessage(ChatColor.RED + "/commandsmanager reload | rl" + ChatColor.GRAY + " - Reloads the configuration file.");
@@ -91,9 +91,11 @@ public class CommandsManagerCommands implements CommandExecutor {
         sender.sendMessage(ChatColor.RED + "commandsmanager.reload" + ChatColor.GRAY + " - Allows to reload the configuration file.");
         sender.sendMessage(ChatColor.RED + "commandsmanager.reset" + ChatColor.GRAY + " - Allows to reset a player's cooldown for all commands or a specific command.");
         sender.sendMessage(ChatColor.RED + "commandsmanager.bypass.blockColons" + ChatColor.GRAY + " - Allows to execute commands with colons(:) in the first argument of the command.");
-        sender.sendMessage(ChatColor.GRAY + "------- " + ChatColor.RED + "CommandsManager by " + ChatColor.YELLOW + "IVEHydra" + ChatColor.GRAY + " v" + ChatColor.RED + instance.getDescription().getVersion() + ChatColor.GRAY + " -------");
+        sendNoHelp(sender);
     }
 
-    private void sendNoHelp(CommandSender sender) { sender.sendMessage(ChatColor.GRAY + "------- " + ChatColor.RED + "CommandsManager by " + ChatColor.YELLOW + "IVEHydra" + ChatColor.GRAY + " v" + ChatColor.RED + instance.getDescription().getVersion() + ChatColor.GRAY + " -------"); }
+    private void sendNoHelp(CommandSender sender) {
+        sender.sendMessage(ChatColor.GRAY + "------- " + ChatColor.RED + "CommandsManager by " + ChatColor.YELLOW + "IVEHydra" + ChatColor.GRAY + " v" + ChatColor.RED + instance.getDescription().getVersion() + ChatColor.GRAY + " -------");
+    }
 
 }

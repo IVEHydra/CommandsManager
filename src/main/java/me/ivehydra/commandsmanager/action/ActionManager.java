@@ -51,7 +51,7 @@ public class ActionManager {
                         .replace("%command_cooldown%", instance.getCooldownManager().getFormattedCooldown(p, data, command))
                         .replace("%command_cost%", command.hasDelay() ? String.valueOf(command.getDelayModule().getCost(p)) : "0")
                 );
-                string = instance.isPlaceholderAPIPresent() ? PlaceholderAPI.setPlaceholders(p, string) : string;
+                string = instance.isPluginPresent("PlaceholderAPI") ? PlaceholderAPI.setPlaceholders(p, string) : string;
                 action.execute(p, string);
             }
         });

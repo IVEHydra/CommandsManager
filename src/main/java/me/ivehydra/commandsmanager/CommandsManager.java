@@ -53,7 +53,7 @@ public class CommandsManager extends JavaPlugin {
             return;
         }
 
-        if(isPlaceholderAPIPresent()) {
+        if(isPluginPresent("PlaceholderAPI")) {
             new PlaceholderAPI().register();
             sendLog("[CommandsManager]" + ChatColor.GREEN + " PlaceholderAPI has been found. The cooldown placeholder is now available for use. The placeholders from PlaceholderAPI can now be used for Actions.");
         } else sendLog("[CommandsManager]" + ChatColor.YELLOW + " PlaceholderAPI not found. The plugin will still function correctly, but the cooldown placeholder and the placeholders from PlaceholderAPI will not be available.");
@@ -97,8 +97,10 @@ public class CommandsManager extends JavaPlugin {
 
     public static CommandsManager getInstance() { return instance; }
 
+    public boolean isPluginPresent(String plugin) { return Bukkit.getPluginManager().getPlugin(plugin) != null; }
+
     private boolean registerEconomy() {
-        if(Bukkit.getPluginManager().getPlugin("Vault") == null) {
+        if(!isPluginPresent("Vault")) {
             sendLog("[CommandsManager]" + ChatColor.RED + " Vault Not Found!");
             return false;
         }
@@ -112,8 +114,6 @@ public class CommandsManager extends JavaPlugin {
     }
 
     public Economy getEconomy() { return this.economy; }
-
-    public boolean isPlaceholderAPIPresent() { return Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null; }
 
     public void reloadConfigFile() {
         reloadConfig();
