@@ -43,6 +43,16 @@ loadingBar:
   symbol: "[]"
   completedColor: "&a"
   notCompletedColor: "&c"
+  bossBar:
+    enabled: true
+    replaceActionBar: false
+    #If 'progress' is set to true, when the player needs to authenticate, the boss bar will decrease every second.
+    progress: true
+    #Only works for 1.9+ versions.
+    color: RED
+    #Only works for 1.9+ versions.
+    style: SOLID
+    message: "&cYou need to wait &e%command_time_delay% &cseconds to execute &e%command_name%&c."
 
 commandsSettings:
   #If set to "true", commands with colons in the first argument(/bukkit:plugins), will not be executed.

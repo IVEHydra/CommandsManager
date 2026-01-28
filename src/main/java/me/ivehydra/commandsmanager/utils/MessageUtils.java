@@ -1,6 +1,7 @@
 package me.ivehydra.commandsmanager.utils;
 
 import me.ivehydra.commandsmanager.CommandsManager;
+import net.md_5.bungee.api.ChatColor;
 
 public enum MessageUtils {
 
@@ -23,7 +24,8 @@ public enum MessageUtils {
     HOURS("messages.time.hours"),
     DAYS("messages.time.days"),
     ACTIVE_COOLDOWN("messages.placeholder.cooldown.activeCooldown"),
-    INACTIVE_COOLDOWN("messages.placeholder.cooldown.inactiveCooldown");
+    INACTIVE_COOLDOWN("messages.placeholder.cooldown.inactiveCooldown"),
+    BOSSBAR("loadingBar.bossBar.message");
 
     private final CommandsManager instance = CommandsManager.getInstance();
     private final String path;
@@ -34,6 +36,10 @@ public enum MessageUtils {
 
     public String getFormattedMessage(Object... replacements) {
         String message = instance.getConfig().getString(path);
+        if(message == null) {
+            instance.sendLog("[CommandsManager]" + ChatColor.RED + " Missing message in the configuration file: " + path);
+            return "null";
+        }
         message = StringUtils.getColoredString(message);
         for(int i = 0; i < replacements.length; i += 2) {
             String placeholder = (String) replacements[i];

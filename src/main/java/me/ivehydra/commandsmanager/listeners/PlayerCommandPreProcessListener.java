@@ -14,7 +14,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
-import java.util.Set;
+import java.util.List;
 
 public class PlayerCommandPreProcessListener implements Listener {
 
@@ -27,13 +27,14 @@ public class PlayerCommandPreProcessListener implements Listener {
         Player p = e.getPlayer();
         CommandManager commandManager = instance.getCommandManager();
         CommandSettings commandSettings = commandManager.getCommandSettings();
-        Set<Player> delay = instance.getDelay();
-        Set<Player> delayFailed = instance.getDelayFailed();
+        List<String> delay = instance.getDelay();
+        List<String> delayFailed = instance.getDelayFailed();
+        String name = p.getName();
 
-        if(commandSettings.isCommand() && delay.contains(p)) {
+        if(commandSettings.isCommand() && delay.contains(name)) {
             e.setCancelled(true);
-            delayFailed.add(p);
-            delay.remove(p);
+            delayFailed.add(name);
+            delay.remove(name);
             return;
         }
 
@@ -73,9 +74,10 @@ public class PlayerCommandPreProcessListener implements Listener {
         }
     }
 
-    private void handleFirst(PlayerCommandPreprocessEvent e, Player p, String eCommand, Command command, Set<Player> delay) {
+    private void handleFirst(PlayerCommandPreprocessEvent e, Player p, String eCommand, Command command, List<String> delay) {
         CooldownModule cooldownModule = command.getCooldownModule();
         DelayModule delayModule = command.getDelayModule();
+        String name = p.getName();
         if(command.hasPermission(p)) {
             if(handleCost(e, p, eCommand, delayModule)) {
                 delayModule.withdrawMoney(p);
@@ -90,7 +92,7 @@ public class PlayerCommandPreProcessListener implements Listener {
                 } else {
                     if(handleCost(e, p, eCommand, delayModule)) {
                         e.setCancelled(true);
-                        if(!delay.contains(p)) Delay.delay(p, eCommand, command, string);
+                        if(!delay.contains(name)) Delay.delay(name, eCommand, command, string);
                         instance.getActionManager().execute(p, delayModule.getActionsOnWait(), eCommand, command);
                     }
                 }
@@ -113,8 +115,9 @@ public class PlayerCommandPreProcessListener implements Listener {
         });
     }
 
-    private void handleThird(PlayerCommandPreprocessEvent e, Player p, String eCommand, Command command, Set<Player> delay) {
+    private void handleThird(PlayerCommandPreprocessEvent e, Player p, String eCommand, Command command, List<String> delay) {
         DelayModule delayModule = command.getDelayModule();
+        String name = p.getName();
         if(command.hasPermission(p)) {
             if(handleCost(e, p, eCommand, delayModule)) {
                 delayModule.withdrawMoney(p);
@@ -123,7 +126,7 @@ public class PlayerCommandPreProcessListener implements Listener {
         } else {
             if(handleCost(e, p, eCommand, delayModule)) {
                 e.setCancelled(true);
-                if(!delay.contains(p)) Delay.delay(p, eCommand, command, "");
+                if(!delay.contains(name)) Delay.delay(name, eCommand, command, "");
                 instance.getActionManager().execute(p, delayModule.getActionsOnWait(), eCommand, command);
             }
         }

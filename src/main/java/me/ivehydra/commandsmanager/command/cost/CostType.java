@@ -17,6 +17,7 @@ public enum CostType {
             return CostType.valueOf(type.toUpperCase());
         } catch(IllegalArgumentException e) {
             instance.sendLog("[CommandsManager]" + ChatColor.RED + " Unknown Cost Type: " + type);
+            instance.sendLog("[CommandsManager]" + ChatColor.RED + " Details: " + e.getMessage());
             return null;
         }
     }

@@ -1,10 +1,10 @@
 name: CommandsManager
 main: me.ivehydra.commandsmanager.CommandsManager
 author: IVEHydra
-description: Blocks, Adds a Cooldown and Adds a Delay with Cost to any Command.
-version: 3.1.5
+description: Blocks, Adds Cooldowns and Adds Delays with Costs to any Command.
+version: 3.1.6
 api-version: 1.13
-softdepend: [PlaceholderAPI, ProtocolLib]
+softdepend: [PlaceholderAPI]
 depend: [Vault]
 
 commands:

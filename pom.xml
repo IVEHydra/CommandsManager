@@ -6,11 +6,11 @@
 
     <groupId>me.ivehydra</groupId>
     <artifactId>CommandsManager</artifactId>
-    <version>3.1.5</version>
+    <version>3.1.6</version>
     <packaging>jar</packaging>
 
     <name>CommandsManager</name>
-    <description>Blocks, Adds a Cooldown and Adds a Delay with Cost to any Command.</description>
+    <description>Blocks, Adds Cooldowns and Adds Delays with Costs to any Command.</description>
 
     <developers>
         <developer>
@@ -130,6 +130,7 @@
                                         <exclude>com/cryptomorin/xseries/profiles/gameprofile/property/NewProperty*</exclude>
                                         <exclude>com/cryptomorin/xseries/profiles/gameprofile/property/OldProperty*</exclude>
                                         <exclude>com/cryptomorin/xseries/profiles/gameprofile/property/XProperty*</exclude>
+                                        <exclude>com/cryptomorin/xseries/paper/AdventureAPIFactory*</exclude>
                                     </excludes>
                                 </filter>
                             </filters>
@@ -171,7 +172,7 @@
         <dependency>
             <groupId>com.github.cryptomorin</groupId>
             <artifactId>XSeries</artifactId>
-            <version>13.5.1</version>
+            <version>13.6.0</version>
         </dependency>
         <dependency>
             <groupId>com.github.MilkBowl</groupId>

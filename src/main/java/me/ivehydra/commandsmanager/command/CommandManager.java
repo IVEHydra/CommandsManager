@@ -69,6 +69,7 @@ public class CommandManager {
                         }
                     } catch(IllegalArgumentException e) {
                         instance.sendLog("[CommandsManager]" + ChatColor.RED + " Invalid CommandType: " + typeString);
+                        instance.sendLog("[CommandsManager]" + ChatColor.RED + " Details: " + e.getMessage());
                     }
 
                     if(command != null)

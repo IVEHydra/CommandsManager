@@ -1,6 +1,6 @@
 # Introduction
 
-**CommandsManager** is a plugin for **SpigotMC** that Blocks, Adds a Cooldown and Adds a Delay with Cost to any Command.
+**CommandsManager** is a plugin for **SpigotMC** that Blocks, Adds Cooldowns and Adds Delays with Costs to any Command.
 
 # More Details
 

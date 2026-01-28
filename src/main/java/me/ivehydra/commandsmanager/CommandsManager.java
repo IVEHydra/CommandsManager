@@ -16,7 +16,6 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -38,15 +37,16 @@ public class CommandsManager extends JavaPlugin {
     private CommandManager commandManager;
     private ActionManager actionManager;
     private CooldownManager cooldownManager;
-    private Set<Player> delay;
-    private Set<Player> delayFailed;
+    private List<String> delay;
+    private List<String> delayFailed;
+    private String latestVersion = null;
 
     @Override
     public void onEnable() {
         instance = this;
         cooldownsConfiguration = new YamlConfiguration();
-        delay = new HashSet<>();
-        delayFailed = new HashSet<>();
+        delay = new ArrayList<>();
+        delayFailed = new ArrayList<>();
 
         if(!registerEconomy()) {
             Bukkit.getPluginManager().disablePlugin(this);
@@ -151,9 +151,11 @@ public class CommandsManager extends JavaPlugin {
 
     public CooldownManager getCooldownManager() { return this.cooldownManager; }
 
-    public Set<Player> getDelay() { return delay; }
+    public List<String> getDelay() { return delay; }
 
-    public Set<Player> getDelayFailed() { return delayFailed; }
+    public List<String> getDelayFailed() { return delayFailed; }
+
+    public String getLatestVersion() { return latestVersion; }
 
     private void registerCommands() {
         Objects.requireNonNull(getCommand("commandsmanager")).setExecutor(new CommandsManagerCommands());
@@ -176,7 +178,11 @@ public class CommandsManager extends JavaPlugin {
         Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
             try(InputStream stream = new URL("https://api.spigotmc.org/legacy/update.php?resource=111108").openStream()) {
                 Scanner scanner = new Scanner(stream);
-                if(scanner.hasNext()) consumer.accept(scanner.next());
+                if(scanner.hasNext()) {
+                    String version = scanner.next();
+                    latestVersion = version;
+                    consumer.accept(version);
+                }
             } catch(IOException e) {
                 sendLog("[CommandsManager]" + ChatColor.RED + " Can't find a new version!");
                 sendLog("[CommandsManager]" + ChatColor.RED + " Error details: " + e.getMessage());
@@ -185,5 +191,6 @@ public class CommandsManager extends JavaPlugin {
     }
 
     public void sendLog(String string) { getServer().getConsoleSender().sendMessage(string); }
+
 
 }

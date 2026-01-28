@@ -95,7 +95,14 @@ public class CommandsManagerCommands implements CommandExecutor {
     }
 
     private void sendNoHelp(CommandSender sender) {
-        sender.sendMessage(ChatColor.GRAY + "------- " + ChatColor.RED + "CommandsManager by " + ChatColor.YELLOW + "IVEHydra" + ChatColor.GRAY + " v" + ChatColor.RED + instance.getDescription().getVersion() + ChatColor.GRAY + " -------");
+        String latestVersion = instance.getLatestVersion();
+        String currentVersion = instance.getDescription().getVersion();
+        String color = ChatColor.GREEN.toString();
+
+        if(latestVersion != null && !currentVersion.equals(latestVersion))
+            color = ChatColor.RED.toString();
+
+        sender.sendMessage(ChatColor.GRAY + "------- " + ChatColor.RED + "CommandsManager by " + ChatColor.YELLOW + "IVEHydra" + ChatColor.GRAY + " v" + color + currentVersion + ChatColor.GRAY + " -------");
     }
 
 }

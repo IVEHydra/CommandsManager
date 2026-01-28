@@ -45,6 +45,8 @@ public class CooldownManager {
     public void save() {
         if(MySQL.isEnabled()) return;
 
+        instance.getCooldownsFile().set("cooldowns", null);
+
         players.forEach(pc -> {
             String uuid = pc.getUUID();
             instance.getCooldownsFile().set("cooldowns." + uuid + ".name", pc.getName());
@@ -70,10 +72,6 @@ public class CooldownManager {
 
         if(MySQL.isEnabled())
             MySQL.removeCooldown(uuid, command);
-        else {
-            instance.getCooldownsFile().set("cooldowns." + uuid + "." + command, null);
-            instance.saveCooldownsFile();
-        }
     }
 
     public void removeAllCooldowns(String name) {
@@ -86,10 +84,6 @@ public class CooldownManager {
 
         if(MySQL.isEnabled())
             MySQL.removeAllCooldowns(uuid);
-        else {
-            instance.getCooldownsFile().set("cooldowns." + uuid, null);
-            instance.saveCooldownsFile();
-        }
     }
 
     public PlayerCooldown getPlayerFromUUID(String uuid) { return players.stream().filter(pc -> pc.getUUID().equals(uuid)).findFirst().orElse(null); }
