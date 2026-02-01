@@ -1,4 +1,4 @@
-package me.ivehydra.commandsmanager.manager;
+package me.ivehydra.commandsmanager.bossbar;
 
 import me.ivehydra.commandsmanager.CommandsManager;
 import me.ivehydra.commandsmanager.utils.BossBarUtils;
@@ -14,7 +14,9 @@ public class BossBarManager {
     private static final CommandsManager instance = CommandsManager.getInstance();
     private static BossBar bossBar;
 
-    private static boolean isEnabled() { return instance.getConfig().getBoolean("loadingBar.bossBar.enabled"); }
+    public static boolean isEnabled() { return instance.getConfig().getBoolean("loadingBar.bossBar.enabled"); }
+
+    public static boolean isProgressEnabled() { return instance.getConfig().getBoolean("loadingBar.bossBar.progress"); }
 
     public static void show(Player p, String text, float percentage) {
         if(!isEnabled()) return;

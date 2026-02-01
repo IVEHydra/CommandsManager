@@ -123,6 +123,7 @@ commandsSettings:
       #[COMMAND_CONSOLE] Command - Executes a command as console.
       #[COMMAND_PLAYER] Command - Executes a command as player.
       #To execute the command the "/" is not needed.
+      #[WAIT] Seconds - Waits a certain amount of time before performing another Action.
       actions:
         - "[SOUND] ENTITY_EXPERIENCE_ORB_PICKUP;1.0;1.0"
         - "[MESSAGE] %prefix% &e%command_name% &ccan't be executed!"

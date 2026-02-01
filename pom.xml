@@ -6,7 +6,7 @@
 
     <groupId>me.ivehydra</groupId>
     <artifactId>CommandsManager</artifactId>
-    <version>3.1.6</version>
+    <version>3.1.7</version>
     <packaging>jar</packaging>
 
     <name>CommandsManager</name>

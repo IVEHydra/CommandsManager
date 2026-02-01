@@ -10,7 +10,7 @@ public class TitleAction implements Action {
     public String getName() { return "TITLE"; }
 
     @Override
-    public void execute(Player p, String string) {
+    public void execute(Player p, String string, Runnable next) {
         String[] args = string.split(";");
         String title = args[0];
         String subTitle = args[1];
@@ -29,6 +29,7 @@ public class TitleAction implements Action {
         }
 
         Titles.sendTitle(p, fadeIn * 20, stay * 20, fadeOut * 20, title, subTitle);
+        next.run();
     }
 
 }

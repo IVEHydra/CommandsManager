@@ -6,6 +6,6 @@ public interface Action {
 
     String getName();
 
-    void execute(Player p, String string);
+    void execute(Player p, String string, Runnable next);
 
 }

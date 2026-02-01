@@ -9,6 +9,9 @@ public class MessageAction implements Action {
     public String getName() { return "MESSAGE"; }
 
     @Override
-    public void execute(Player p, String string) { p.sendMessage(string); }
+    public void execute(Player p, String string, Runnable next) {
+        p.sendMessage(string);
+        next.run();
+    }
 
 }

@@ -2,9 +2,11 @@ package me.ivehydra.commandsmanager.cooldown;
 
 import me.ivehydra.commandsmanager.CommandsManager;
 import me.ivehydra.commandsmanager.command.Command;
+import me.ivehydra.commandsmanager.file.CustomFile;
 import me.ivehydra.commandsmanager.mysql.MySQL;
 import me.ivehydra.commandsmanager.utils.MessageUtils;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -12,10 +14,14 @@ import java.util.List;
 
 public class CooldownManager {
 
-    private final CommandsManager instance = CommandsManager.getInstance();
+    private final CustomFile cooldownsFile;
+    private final YamlConfiguration cooldownsConfig;
     private final List<PlayerCooldown> players;
 
     public CooldownManager() {
+        CommandsManager instance = CommandsManager.getInstance();
+        this.cooldownsFile = instance.getFileManager().getFile("cooldowns.yml");
+        this.cooldownsConfig = cooldownsFile.getConfig();
         this.players = new ArrayList<>();
 
         load();
@@ -23,7 +29,7 @@ public class CooldownManager {
 
     private void load() {
         if(MySQL.isEnabled()) return;
-        ConfigurationSection section = instance.getCooldownsFile().getConfigurationSection("cooldowns");
+        ConfigurationSection section = cooldownsConfig.getConfigurationSection("cooldowns");
         if(section == null) return;
 
         section.getKeys(false).forEach(uuid -> {
@@ -45,14 +51,14 @@ public class CooldownManager {
     public void save() {
         if(MySQL.isEnabled()) return;
 
-        instance.getCooldownsFile().set("cooldowns", null);
+        cooldownsConfig.set("cooldowns", null);
 
         players.forEach(pc -> {
             String uuid = pc.getUUID();
-            instance.getCooldownsFile().set("cooldowns." + uuid + ".name", pc.getName());
-            pc.getCooldowns().forEach(cooldown -> instance.getCooldownsFile().set("cooldowns." + uuid + "." + cooldown.getCommand() + ".cooldown", cooldown.getCooldown()));
+            cooldownsConfig.set("cooldowns." + uuid + ".name", pc.getName());
+            pc.getCooldowns().forEach(cooldown -> cooldownsConfig.set("cooldowns." + uuid + "." + cooldown.getCommand() + ".cooldown", cooldown.getCooldown()));
         });
-        instance.saveCooldownsFile();
+        cooldownsFile.save();
     }
 
     public void addPlayerCooldown(PlayerCooldown pc) { players.add(pc); }

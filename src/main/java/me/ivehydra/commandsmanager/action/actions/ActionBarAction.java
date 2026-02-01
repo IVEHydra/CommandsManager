@@ -10,6 +10,9 @@ public class ActionBarAction implements Action {
     public String getName() { return "ACTIONBAR"; }
 
     @Override
-    public void execute(Player p, String string) { ActionBar.sendActionBar(p, string); }
+    public void execute(Player p, String string, Runnable next) {
+        ActionBar.sendActionBar(p, string);
+        next.run();
+    }
 
 }

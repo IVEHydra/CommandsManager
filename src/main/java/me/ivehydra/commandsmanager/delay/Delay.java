@@ -4,7 +4,7 @@ import com.cryptomorin.xseries.messages.ActionBar;
 import me.ivehydra.commandsmanager.CommandsManager;
 import me.ivehydra.commandsmanager.command.Command;
 import me.ivehydra.commandsmanager.command.modules.DelayModule;
-import me.ivehydra.commandsmanager.manager.BossBarManager;
+import me.ivehydra.commandsmanager.bossbar.BossBarManager;
 import me.ivehydra.commandsmanager.utils.MessageUtils;
 import me.ivehydra.commandsmanager.utils.StringUtils;
 import org.bukkit.Bukkit;
@@ -36,7 +36,7 @@ public class Delay {
             final int time = delayModule.getDelayTime(p);
             final int loadingBarLength = delayModule.getLoadingBarLength(p);
             final String name = p.getName();
-            final boolean replace = instance.getConfig().getBoolean("loadingBar.bossBar.replaceActionBar");
+            final boolean replace = BossBarManager.isEnabled() && instance.getConfig().getBoolean("loadingBar.bossBar.replaceActionBar");
             @Override
             public void run() {
                 if(delayFailed.contains(name)) {
@@ -52,7 +52,7 @@ public class Delay {
                     String bar = LoadingBar.getLoadingBar(currentTime, time, loadingBarLength, StringUtils.getColoredString(instance.getConfig().getString("loadingBar.completedColor")), StringUtils.getColoredString(instance.getConfig().getString("loadingBar.notCompletedColor")), instance.getConfig().getString("loadingBar.symbol"));
                     int missingTime = time - currentTime;
                     String message = MessageUtils.BOSSBAR.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString(), "%command_name%", eCommand, "%command_time_delay%", String.valueOf(missingTime), "%command_cost%", String.valueOf(delayModule.getCost(p)));
-                    float percent = LoadingBar.getPercent(currentTime, time);
+                    float percent = BossBarManager.isProgressEnabled() ? LoadingBar.getPercent(currentTime, time) : 1F;
 
                     if(!replace)
                         ActionBar.sendActionBar(p, bar);

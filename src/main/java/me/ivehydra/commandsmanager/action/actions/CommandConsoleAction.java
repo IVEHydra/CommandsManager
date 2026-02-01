@@ -10,6 +10,9 @@ public class CommandConsoleAction implements Action {
     public String getName() { return "COMMAND_CONSOLE"; }
 
     @Override
-    public void execute(Player p, String string) { Bukkit.dispatchCommand(Bukkit.getConsoleSender(), string); }
+    public void execute(Player p, String string, Runnable next) {
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), string);
+        next.run();
+    }
 
 }

@@ -6,6 +6,7 @@ import me.ivehydra.commandsmanager.command.CommandManager;
 import me.ivehydra.commandsmanager.commands.CommandsManagerCommands;
 import me.ivehydra.commandsmanager.commands.CommandsManagerTabCompleter;
 import me.ivehydra.commandsmanager.cooldown.CooldownManager;
+import me.ivehydra.commandsmanager.file.FileManager;
 import me.ivehydra.commandsmanager.listeners.*;
 import me.ivehydra.commandsmanager.mysql.MySQL;
 import me.ivehydra.commandsmanager.mysql.MySQLConnection;
@@ -14,13 +15,10 @@ import me.ivehydra.commandsmanager.utils.StringUtils;
 import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -31,8 +29,7 @@ public class CommandsManager extends JavaPlugin {
 
     private static CommandsManager instance;
     private Economy economy;
-    private File cooldownsFile;
-    private YamlConfiguration cooldownsConfiguration;
+    private FileManager fileManager;
     private MySQLConnection mySQLConnection;
     private CommandManager commandManager;
     private ActionManager actionManager;
@@ -44,7 +41,7 @@ public class CommandsManager extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-        cooldownsConfiguration = new YamlConfiguration();
+        fileManager = new FileManager();
         delay = new ArrayList<>();
         delayFailed = new ArrayList<>();
 
@@ -59,7 +56,7 @@ public class CommandsManager extends JavaPlugin {
         } else sendLog("[CommandsManager]" + ChatColor.YELLOW + " PlaceholderAPI not found. The plugin will still function correctly, but the cooldown placeholder and the placeholders from PlaceholderAPI will not be available.");
 
         saveDefaultConfig();
-        registerCooldownsFile();
+        fileManager.createFile("cooldowns.yml");
 
         if(MySQL.isEnabled()) {
             mySQLConnection = new MySQLConnection(getConfig().getString("mySQL.host"), getConfig().getInt("mySQL.port"), getConfig().getString("mySQL.username"), getConfig().getString("mySQL.password"), getConfig().getString("mySQL.database"));
@@ -115,33 +112,12 @@ public class CommandsManager extends JavaPlugin {
 
     public Economy getEconomy() { return this.economy; }
 
+    public FileManager getFileManager() { return fileManager; }
+
     public void reloadConfigFile() {
         reloadConfig();
         commandManager = new CommandManager();
     }
-
-    private void registerCooldownsFile() {
-        cooldownsFile = new File(getDataFolder(), "cooldowns.yml");
-        if(!cooldownsFile.exists()) saveResource("cooldowns.yml", false);
-        try {
-            cooldownsConfiguration.load(cooldownsFile);
-        } catch(IOException | InvalidConfigurationException e) {
-            sendLog("[CommandsManager]" + ChatColor.RED + " An error occurred while trying to load 'cooldowns.yml'.");
-            sendLog("[CommandsManager]" + ChatColor.RED + " Error details: " + e.getMessage());
-        }
-    }
-
-    public void saveCooldownsFile() {
-        if(cooldownsFile == null) return;
-        try {
-            getCooldownsFile().save(cooldownsFile);
-        } catch(IOException e) {
-            sendLog("[CommandsManager]" + ChatColor.RED + " An error occurred while saving 'cooldowns.yml'.");
-            sendLog("[CommandsManager]" + ChatColor.RED + " Error details: " + e.getMessage());
-        }
-    }
-
-    public YamlConfiguration getCooldownsFile() { return this.cooldownsConfiguration; }
 
     public MySQLConnection getMySQLConnection() { return this.mySQLConnection; }
 

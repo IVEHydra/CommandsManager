@@ -11,8 +11,9 @@ public class JSONMessageAction implements Action {
     public String getName() { return "JSON_MESSAGE"; }
 
     @Override
-    public void execute(Player p, String string) {
+    public void execute(Player p, String string, Runnable next) {
         BaseComponent[] base = ComponentSerializer.parse(string);
         p.spigot().sendMessage(base);
+        next.run();
     }
 }
