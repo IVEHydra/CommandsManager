@@ -30,6 +30,11 @@ public class CommandsManagerTabCompleter implements TabCompleter {
                 return argsList.stream().filter(string -> string.startsWith(args[0])).collect(Collectors.toList());
             }
 
+            if(args[0].equalsIgnoreCase("reset")) {
+                if(!hasPermission(sender, "commandsmanager.reset"))
+                    return Collections.emptyList();
+            }
+
             if(args.length == 2 && args[0].equalsIgnoreCase("reset")) {
                 for(Player po : Bukkit.getOnlinePlayers())
                     argsList.add(po.getName());
