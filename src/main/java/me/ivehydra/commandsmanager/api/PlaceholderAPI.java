@@ -5,8 +5,6 @@ import me.ivehydra.commandsmanager.CommandsManager;
 import me.ivehydra.commandsmanager.command.Command;
 import me.ivehydra.commandsmanager.utils.MessageUtils;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class PlaceholderAPI extends PlaceholderExpansion {
 
@@ -19,16 +17,16 @@ public class PlaceholderAPI extends PlaceholderExpansion {
     public boolean canRegister() { return true; }
 
     @Override
-    public @NotNull String getIdentifier() { return "commandsmanager"; }
+    public String getIdentifier() { return "commandsmanager"; }
 
     @Override
-    public @NotNull String getAuthor() { return "IVEHydra"; }
+    public String getAuthor() { return "IVEHydra"; }
 
     @Override
-    public @NotNull String getVersion() { return instance.getDescription().getVersion(); }
+    public String getVersion() { return instance.getDescription().getVersion(); }
 
     @Override
-    public @Nullable String onPlaceholderRequest(Player p, @NotNull String identifier) {
+    public String onPlaceholderRequest(Player p, String identifier) {
         if(identifier.startsWith("cooldown_")) {
             String string = identifier.replace("cooldown_", "");
             Command command = instance.getCommandManager().getCommandByIdentifier(string);

@@ -22,6 +22,11 @@ public class SoundAction implements Action {
         double volume;
         double pitch;
 
+        if(args.length != 3) {
+            instance.sendLog("[CommandsManager]" + ChatColor.RED + " Invalid arguments for the sound!");
+            return;
+        }
+
         try {
             volume = Integer.parseInt(args[1]);
             pitch = Integer.parseInt(args[2]);
