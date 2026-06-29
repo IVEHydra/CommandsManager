@@ -24,56 +24,63 @@ public class CommandsManagerCommands implements CommandExecutor {
             boolean isPlayer = sender instanceof Player;
             Player p = isPlayer ? (Player) sender : null;
 
-            if(args.length == 0 || (args.length == 1 && args[0].equalsIgnoreCase("help"))) {
-                if(isPlayer && !p.hasPermission("commandsmanager.help"))
-                    sendNoHelp(p);
-                else
-                    sendHelp(sender);
-                return true;
-            }
-
-            if(args.length == 1 && (args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("rl"))) {
-                if(isPlayer && !p.hasPermission("commandsmanager.reload")) {
-                    p.sendMessage(MessageUtils.NO_PERMISSION.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString()));
+            switch(args.length) {
+                case 0:
+                    if(isPlayer && !p.hasPermission("commandsmanager.help"))
+                        sendNoHelp(p);
+                    else
+                        sendHelp(sender);
                     return true;
-                }
-                instance.reloadConfigFile();
-                sender.sendMessage(MessageUtils.CONFIG_RELOADED.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString()));
-                return true;
-            }
-
-            if(args.length >= 3 && args[0].equalsIgnoreCase("reset")) {
-                if(isPlayer && !p.hasPermission("commandsmanager.reset")) {
-                    p.sendMessage(MessageUtils.NO_PERMISSION.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString()));
-                    return true;
-                }
-
-                String name = args[1];
-                String command = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
-                CooldownManager cooldownManager = instance.getCooldownManager();
-
-                if(command.equalsIgnoreCase("all")) {
-                    cooldownManager.removeAllCooldowns(name);
-                    sender.sendMessage(MessageUtils.ALL_COOLDOWNS_REMOVED.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString(), "%player_name%", name));
-                } else {
-                    PlayerCooldown pc = cooldownManager.getPlayerFromName(name);
-                    if(pc == null) {
-                        sender.sendMessage(MessageUtils.NO_PLAYER.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString(), "%player_name%", name));
+                case 1:
+                    if(args[0].equalsIgnoreCase("help")) {
+                        if(isPlayer && !p.hasPermission("commandsmanager.help"))
+                            sendNoHelp(p);
+                        else
+                            sendHelp(sender);
+                    } else if(args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("rl")) {
+                        if(isPlayer && !p.hasPermission("commandsmanager.reload")) {
+                            p.sendMessage(MessageUtils.NO_PERMISSION.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString()));
+                            return true;
+                        }
+                        instance.reloadConfigFile();
+                        sender.sendMessage(MessageUtils.CONFIG_RELOADED.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString()));
                         return true;
                     }
-                    Cooldown cooldown = pc.getCooldownByCommand(command);
-                    if(cooldown == null) {
-                        sender.sendMessage(MessageUtils.NO_COOLDOWN.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString(), "%player_name%", name, "%command_name%", command));
-                        return true;
-                    }
-                    cooldownManager.removeCooldown(name, command);
-                    sender.sendMessage(MessageUtils.COOLDOWN_REMOVED.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString(), "%player_name%", name, "%command_name%", command));
+                    return true;
+                default:
+                    if(args.length >= 3 && args[0].equalsIgnoreCase("reset")) {
+                        if(isPlayer && !p.hasPermission("commandsmanager.reset")) {
+                            p.sendMessage(MessageUtils.NO_PERMISSION.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString()));
+                            return true;
+                        }
 
-                }
-                return true;
+                        String name = args[1];
+                        String command = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
+                        CooldownManager cooldownManager = instance.getCooldownManager();
+
+                        if(command.equalsIgnoreCase("all")) {
+                            cooldownManager.removeAllCooldowns(name);
+                            sender.sendMessage(MessageUtils.ALL_COOLDOWNS_REMOVED.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString(), "%player_name%", name));
+                        } else {
+                            PlayerCooldown pc = cooldownManager.getPlayerFromName(name);
+                            if(pc == null) {
+                                sender.sendMessage(MessageUtils.NO_PLAYER.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString(), "%player_name%", name));
+                                return true;
+                            }
+                            Cooldown cooldown = pc.getCooldownByCommand(command);
+                            if(cooldown == null) {
+                                sender.sendMessage(MessageUtils.NO_COOLDOWN.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString(), "%player_name%", name, "%command_name%", command));
+                                return true;
+                            }
+                            cooldownManager.removeCooldown(name, command);
+                            sender.sendMessage(MessageUtils.COOLDOWN_REMOVED.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString(), "%player_name%", name, "%command_name%", command));
+
+                        }
+                        return true;
+                    } else
+                        sender.sendMessage(MessageUtils.WRONG_ARGUMENTS.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString()));
+                    return true;
             }
-            sender.sendMessage(MessageUtils.WRONG_ARGUMENTS.getFormattedMessage("%prefix%", MessageUtils.PREFIX.toString()));
-            return true;
         }
         return true;
     }
